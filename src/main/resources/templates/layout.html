@@ -25,7 +25,7 @@
             <h2>SmartCampus</h2>
         </div>
         <div class="nav-links">
-            <div th:if="${session.role == 'ADMIN'}">
+            <div th:if="${role == 'ADMIN'}">
                 <a th:href="@{/admin/dashboard}" class="nav-item">
                     <i class="fas fa-grid-2" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
                     Dashboard
@@ -56,7 +56,7 @@
                 </a>
             </div>
 
-            <div th:if="${session.role == 'PRINCIPAL'}">
+            <div th:if="${role == 'PRINCIPAL'}">
                 <a th:href="@{/staff/dashboard}" class="nav-item">
                     <i class="fas fa-chart-pie"></i> Dashboard
                 </a>
@@ -80,20 +80,20 @@
                 </a>
             </div>
 
-            <div th:if="${session.role == 'STAFF' or session.role == 'HOD'}">
+            <div th:if="${role == 'STAFF' or role == 'HOD'}">
                 <a th:href="@{/staff/dashboard}" class="nav-item">
                     <i class="fas fa-border-all"></i> Dashboard
                 </a>
                 <a th:href="@{/staff/timetable}" class="nav-item">
                     <i class="fas fa-calendar-days"></i> My Timetable
                 </a>
-                <a th:if="${session.role == 'HOD'}" th:href="@{/admin/timetable}" class="nav-item">
+                <a th:if="${role == 'HOD'}" th:href="@{/admin/timetable}" class="nav-item">
                     <i class="fas fa-calendar-alt"></i> Manage Timetable
                 </a>
-                <a th:if="${session.role == 'HOD'}" th:href="@{/admin/schedule}" class="nav-item">
+                <a th:if="${role == 'HOD'}" th:href="@{/admin/schedule}" class="nav-item">
                     <i class="fas fa-calendar-days"></i> Exam Schedule
                 </a>
-                <a th:if="${session.role == 'HOD'}" th:href="@{/admin/timings}" class="nav-item">
+                <a th:if="${role == 'HOD'}" th:href="@{/admin/timings}" class="nav-item">
                     <i class="fas fa-clock"></i> Period Timings
                 </a>
                 <a th:href="@{/admin/students}" class="nav-item">
@@ -110,7 +110,7 @@
                 </a>
             </div>
 
-            <div th:if="${session.role == 'STUDENT'}">
+            <div th:if="${role == 'STUDENT'}">
                 <a th:href="@{/student/dashboard}" class="nav-item">
                     <i class="fas fa-th-large"></i> Dashboard
                 </a>
@@ -345,17 +345,17 @@
                 <div class="user-dropdown">
                     <div class="user-info" id="userDropdownBtn" style="cursor: pointer;">
                         <div class="user-avatar" style="overflow: hidden; padding: 0;">
-                            <img th:if="${session.profilePhotoPath != null}" th:src="@{${session.profilePhotoPath}}"
+                            <img th:if="${profilePhotoPath != null}" th:src="@{${profilePhotoPath}}"
                                 alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover;">
-                            <span th:unless="${session.profilePhotoPath != null}"
-                                th:text="${session.userFullName != null ? session.userFullName.substring(0, 1).toUpperCase() : (session.username != null ? session.username.substring(0, 1).toUpperCase() : 'U')}">U</span>
+                            <span th:unless="${profilePhotoPath != null}"
+                                th:text="${userFullName != null ? userFullName.substring(0, 1).toUpperCase() : (username != null ? username.substring(0, 1).toUpperCase() : 'U')}">U</span>
                         </div>
                         <div class="user-details">
                             <div class="user-name"
-                                th:text="${session.userFullName != null ? session.userFullName : session.username}">
+                                th:text="${userFullName != null ? userFullName : username}">
                                 Username
                             </div>
-                            <div class="user-role" th:text="${session.role}">ROLE</div>
+                            <div class="user-role" th:text="${role}">ROLE</div>
                         </div>
                         <i class="fas fa-chevron-down"
                             style="color: var(--text-muted); font-size: 0.8rem; margin-left: 0.5rem; margin-right: 0.5rem;"></i>
@@ -366,25 +366,25 @@
                             <h3>Account Actions</h3>
                         </div>
                         <div class="notification-list" style="padding: 0.5rem 0;">
-                            <a th:if="${session.role == 'STUDENT'}" th:href="@{/student/profile}"
+                            <a th:if="${role == 'STUDENT'}" th:href="@{/student/profile}"
                                 class="notification-item"
                                 style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
                                 <i class="fas fa-user" style="color: var(--text-muted);"></i>
                                 <span style="color: var(--text-main); font-weight: 500;">My Profile</span>
                             </a>
-                            <a th:if="${session.role == 'STAFF' or session.role == 'HOD' or session.role == 'PRINCIPAL'}"
+                            <a th:if="${role == 'STAFF' or role == 'HOD' or role == 'PRINCIPAL'}"
                                 th:href="@{/staff/profile}" class="notification-item"
                                 style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
                                 <i class="fas fa-user-tie" style="color: var(--text-muted);"></i>
                                 <span style="color: var(--text-main); font-weight: 500;">My Profile</span>
                             </a>
-                            <a th:if="${session.role == 'STUDENT'}" th:href="@{/student/change-password}"
+                            <a th:if="${role == 'STUDENT'}" th:href="@{/student/change-password}"
                                 class="notification-item"
                                 style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
                                 <i class="fas fa-key" style="color: var(--text-muted);"></i>
                                 <span style="color: var(--text-main); font-weight: 500;">Update Password</span>
                             </a>
-                            <a th:if="${session.role == 'STAFF' or session.role == 'HOD' or session.role == 'PRINCIPAL'}"
+                            <a th:if="${role == 'STAFF' or role == 'HOD' or role == 'PRINCIPAL'}"
                                 th:href="@{/staff/change-password}" class="notification-item"
                                 style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
                                 <i class="fas fa-lock" style="color: var(--text-muted);"></i>

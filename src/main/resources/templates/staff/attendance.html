@@ -122,7 +122,7 @@
                                     <div th:if="${attendanceMap.get(student.id).markedBy != null}"
                                         style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
                                         Marked by: <span
-                                            th:text="${attendanceMap.get(student.id).markedBy.employeeId == session.username ? 'You' : attendanceMap.get(student.id).markedBy.fullName}">Staff
+                                            th:text="${attendanceMap.get(student.id).markedBy.employeeId == username ? 'You' : attendanceMap.get(student.id).markedBy.fullName}">Staff
                                             Name</span>
                                     </div>
                                 </span>

@@ -59,7 +59,7 @@
                         members and administrative staff.</p>
                 </div>
 
-                <div th:if="${session.role == 'ADMIN' or session.role == 'PRINCIPAL'}"
+                <div th:if="${role == 'ADMIN' or role == 'PRINCIPAL'}"
                     style="display: flex; gap: 1rem; align-items: center;">
                     <form th:action="@{/admin/staff}" method="get" id="filterForm"
                         style="display: flex; gap: 0.5rem; align-items: center;">
@@ -75,7 +75,7 @@
                     </form>
                 </div>
 
-                <a th:if="${session.role == 'ADMIN'}" th:href="@{/admin/staff/new}" class="btn"
+                <a th:if="${role == 'ADMIN'}" th:href="@{/admin/staff/new}" class="btn"
                     style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                     <i class="fas fa-plus"></i> Add Staff Member
                 </a>
@@ -90,7 +90,7 @@
                             <th>Designation</th>
                             <th>Department</th>
                             <th>Official Email</th>
-                            <th th:if="${session.role == 'ADMIN' or session.role == 'PRINCIPAL'}"
+                            <th th:if="${role == 'ADMIN' or role == 'PRINCIPAL'}"
                                 style="text-align: right;">Actions</th>
                         </tr>
                     </thead>
@@ -110,18 +110,18 @@
                             <td><span class="tag tag-info" th:text="${s.department != null ? s.department.name : 'N/A'}">Computer Science</span></td>
                             <td style="color: var(--text-muted); font-size: 0.85rem;" th:text="${s.email}">
                                 jane@example.com</td>
-                            <td th:if="${session.role == 'ADMIN' or session.role == 'PRINCIPAL'}"
+                            <td th:if="${role == 'ADMIN' or role == 'PRINCIPAL'}"
                                 style="text-align: right; white-space: nowrap;">
                                 <a th:href="@{/admin/staff/{id}(id=${s.id})}" class="btn btn-outline"
                                     style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-right: 0.25rem;">
                                     <i class="fas fa-id-card"></i> View Profile
                                 </a>
-                                <a th:if="${session.role == 'ADMIN'}" th:href="@{/admin/staff/edit/{id}(id=${s.id})}"
+                                <a th:if="${role == 'ADMIN'}" th:href="@{/admin/staff/edit/{id}(id=${s.id})}"
                                     class="btn btn-outline"
                                     style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-right: 0.25rem;">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <a th:if="${session.role == 'ADMIN'}" href="#" class="btn"
+                                <a th:if="${role == 'ADMIN'}" href="#" class="btn"
                                     style="padding: 0.3rem 0.6rem; font-size: 0.75rem; background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c;"
                                     th:attr="onclick=|return showDeleteModal('@{/admin/staff/delete/{id}(id=${s.id})}');|">
                                     <i class="fas fa-trash-alt"></i> Delete
