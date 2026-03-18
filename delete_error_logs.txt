@@ -1,0 +1,100 @@
+﻿	at org.springframework.web.servlet.Framewo
+rkServlet.processRequest(FrameworkServlet.j
+ava:1014)
+	at org.springframework.web.servlet.Framewo
+rkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.servic
+e(HttpServlet.java:564)
+	at org.springframework.web.servlet.Framewo
+rkServlet.service(FrameworkServlet.java:885
+)
+	at jakarta.servlet.http.HttpServlet.servic
+e(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFil
+terChain.internalDoFilter(ApplicationFilter
+Chain.java:195)
+	at org.apache.catalina.core.ApplicationFil
+terChain.doFilter(ApplicationFilterChain.ja
+va:140)
+	at org.apache.tomcat.websocket.server.WsFi
+lter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFil
+terChain.internalDoFilter(ApplicationFilter
+Chain.java:164)
+	at org.apache.catalina.core.ApplicationFil
+terChain.doFilter(ApplicationFilterChain.ja
+va:140)
+	at org.springframework.web.filter.RequestC
+ontextFilter.doFilterInternal(RequestContex
+tFilter.java:100)
+	at org.springframework.web.filter.OncePerR
+equestFilter.doFilter(OncePerRequestFilter.
+java:116)
+	at org.apache.catalina.core.ApplicationFil
+terChain.internalDoFilter(ApplicationFilter
+Chain.java:164)
+	at org.apache.catalina.core.ApplicationFil
+terChain.doFilter(ApplicationFilterChain.ja
+va:140)
+	at org.springframework.web.filter.FormCont
+entFilter.doFilterInternal(FormContentFilte
+r.java:93)
+	at org.springframework.web.filter.OncePerR
+equestFilter.doFilter(OncePerRequestFilter.
+java:116)
+	at org.apache.catalina.core.ApplicationFil
+terChain.internalDoFilter(ApplicationFilter
+Chain.java:164)
+	at org.apache.catalina.core.ApplicationFil
+terChain.doFilter(ApplicationFilterChain.ja
+va:140)
+	at org.springframework.web.filter.Characte
+rEncodingFilter.doFilterInternal(CharacterE
+ncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerR
+equestFilter.doFilter(OncePerRequestFilter.
+java:116)
+	at org.apache.catalina.core.ApplicationFil
+terChain.internalDoFilter(ApplicationFilter
+Chain.java:164)
+	at org.apache.catalina.core.ApplicationFil
+terChain.doFilter(ApplicationFilterChain.ja
+va:140)
+	at org.apache.catalina.core.StandardWrappe
+rValve.invoke(StandardWrapperValve.java:167
+)
+	at org.apache.catalina.core.StandardContex
+tValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.Authe
+nticatorBase.invoke(AuthenticatorBase.java:
+483)
+	at org.apache.catalina.core.StandardHostVa
+lve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportV
+alve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngine
+Valve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAda
+pter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processo
+r.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLigh
+t.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$Conn
+ectionHandler.process(AbstractProtocol.java
+:905)
+	at org.apache.tomcat.util.net.NioEndpoint$
+SocketProcessor.doRun(NioEndpoint.java:1743
+)
+	at org.apache.tomcat.util.net.SocketProces
+sorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPo
+olExecutor.runWorker(ThreadPoolExecutor.jav
+a:1190)
+	at org.apache.tomcat.util.threads.ThreadPo
+olExecutor$Worker.run(ThreadPoolExecutor.ja
+va:659)
+	at org.apache.tomcat.util.threads.TaskThre
+ad$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.j
+ava:1474)

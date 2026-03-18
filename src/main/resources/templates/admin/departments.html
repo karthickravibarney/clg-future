@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Manage Departments - SmartCampus</title>
+</head>
+
+<body>
+    <div layout:fragment="title">Departments</div>
+
+    <div layout:fragment="content">
+        <div class="card">
+            <div class="card-header"
+                style="background: var(--grad-primary); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 2rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                <div style="display: flex; flex-direction: column;">
+                    <h2 class="card-title" style="color: white; font-size: 1.8rem; font-weight: 800;"><i
+                            class="fas fa-building-columns"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 12px; margin-right: 0.5rem;"></i>
+                        Department List</h2>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; opacity: 0.9;">Manage academic departments and
+                        their administrative codes.</p>
+                </div>
+                <a th:href="@{/admin/departments/new}" class="btn"
+                    style="background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <i class="fas fa-plus"></i> Create New Department
+                </a>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">Code</th>
+                            <th>Department Name</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="dept : ${departments}">
+                            <td>
+                                <span class="tag tag-info"
+                                    style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;"
+                                    th:text="${dept.code}">CS</span>
+                            </td>
+                            <td style="font-weight: 600; font-family: 'Outfit', sans-serif;" th:text="${dept.name}">
+                                Computer Science</td>
+                            <td style="text-align: right; white-space: nowrap;">
+                                <a th:href="@{/admin/departments/edit/{id}(id=${dept.id})}" class="btn btn-outline"
+                                    style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-right: 0.25rem;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="#" class="btn"
+                                    style="padding: 0.3rem 0.6rem; font-size: 0.75rem; background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c;"
+                                    title="Delete Department"
+                                    th:attr="onclick=|return showDeleteModal('@{/admin/departments/delete/{id}(id=${dept.id})}');|">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(departments)}">
+                            <td colspan="3" style="text-align: center; padding: 4rem; color: var(--text-muted);">
+                                <i class="fas fa-building-circle-exclamation"
+                                    style="font-size: 2rem; display: block; margin-bottom: 1rem; opacity: 0.3;"></i>
+                                No departments have been defined yet.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="modal"
+            style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+            <div class="modal-content"
+                style="background: white; padding: 2rem; border-radius: var(--radius-lg); max-width: 400px; width: 90%; text-align: center; box-shadow: var(--card-hover-shadow);">
+                <div
+                    style="width: 60px; height: 60px; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 1.5rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 style="margin: 0 0 1rem; font-size: 1.25rem;">Confirm Deletion</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem; line-height: 1.5;">Are you sure you want to
+                    delete this department? This action cannot be undone and will permanently remove its records.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button type="button" onclick="closeDeleteModal()" class="btn btn-outline"
+                        style="flex: 1;">Cancel</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-primary"
+                        style="flex: 1; background: #dc2626; border-color: #dc2626;">Delete</a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function showDeleteModal(deleteUrl) {
+                document.getElementById('confirmDeleteBtn').href = deleteUrl;
+                document.getElementById('deleteModal').style.display = 'flex';
+                return false;
+            }
+
+            function closeDeleteModal() {
+                document.getElementById('deleteModal').style.display = 'none';
+            }
+
+            window.onclick = function (event) {
+                var modal = document.getElementById('deleteModal');
+                if (event.target == modal) {
+                    closeDeleteModal();
+                }
+            }
+        </script>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Student Profile View - SmartCampus</title>
+    <style>
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2.5rem;
+            align-items: start;
+        }
+
+        .profile-side-card {
+            background: var(--white);
+            padding: 3rem 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            position: sticky;
+            top: 100px;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            font-size: 3rem;
+            font-family: 'Outfit', sans-serif;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 20px rgba(67, 56, 202, 0.2);
+            border: 4px solid white;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-main);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .doc-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .doc-card:hover {
+            border-color: var(--primary-light);
+            background: #f8fafc;
+            transform: translateX(5px);
+        }
+
+        .doc-info h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="title">Student Profile Review</div>
+
+    <div layout:fragment="content">
+        <div style="margin-bottom: 1.5rem;">
+            <a href="javascript:history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Directory
+            </a>
+        </div>
+
+        <div class="profile-grid">
+            <!-- Profile Column -->
+            <div class="profile-side-card">
+                <div class="avatar-preview" style="overflow: hidden; padding: 0;">
+                    <img th:if="${student.profilePhotoPath != null}" th:src="@{${student.profilePhotoPath}}"
+                        alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                    <span th:unless="${student.profilePhotoPath != null}"
+                        th:text="${student.fullName.substring(0, 1).toUpperCase()}">U</span>
+                </div>
+                <h2 style="margin: 0; font-size: 1.5rem;" th:text="${student.fullName}">Student Name</h2>
+                <div class="tag tag-info" style="margin-top: 0.75rem;" th:text="${student.rollNumber}">Roll Number</div>
+
+                <div style="margin-top: 2.5rem; text-align: left;">
+                    <div class="info-row">
+                        <span class="info-label">Department</span>
+                        <span class="info-value" th:text="${student.department.name}">CS</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Batch</span>
+                        <span class="info-value" th:text="${student.batch.name}">2022-26</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Official Email</span>
+                        <span class="info-value" th:text="${student.email}">email@domain.com</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Contact Number</span>
+                        <span class="info-value" th:text="${student.contactNumber ?: 'Not Provided'}">9876543210</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Family Contact</span>
+                        <span class="info-value"
+                            th:text="${student.familyContactNumber ?: 'Not Provided'}">9876543210</span>
+                    </div>
+                    <div class="info-row" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+                        <span class="info-label">Residential Address</span>
+                        <span class="info-value" style="line-height: 1.4; text-align: left;"
+                            th:text="${student.address ?: 'Not Provided'}">Address here...</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; border-top: 1px solid var(--bg-main); padding-top: 1.5rem;">
+                    <button class="btn btn-primary" style="width: 100%;" disabled>Approved Profile</button>
+                </div>
+            </div>
+
+            <!-- Documents Column -->
+            <div class="card" style="margin-bottom: 0;">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-folder-open"></i> Verification Documents</h2>
+                </div>
+                <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Review the student's
+                    uploaded identities and certificates.</p>
+
+                <!-- Aadhaar -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>Aadhaar Card</h4>
+                        <span th:if="${student.aadhaarCardPath != null}" class="tag tag-success">Uploaded &
+                            Available</span>
+                        <span th:unless="${student.aadhaarCardPath != null}" class="tag tag-danger">No Document</span>
+                    </div>
+                    <a th:if="${student.aadhaarCardPath != null}" th:href="@{${student.aadhaarCardPath}}"
+                        target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- PAN -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>PAN Card</h4>
+                        <span th:if="${student.panCardPath != null}" class="tag tag-success">Uploaded & Available</span>
+                        <span th:unless="${student.panCardPath != null}" class="tag tag-danger">No Document</span>
+                    </div>
+                    <a th:if="${student.panCardPath != null}" th:href="@{${student.panCardPath}}" target="_blank"
+                        class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- Income -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>Income Certificate</h4>
+                        <span th:if="${student.incomeCertificatePath != null}" class="tag tag-success">Uploaded &
+                            Available</span>
+                        <span th:unless="${student.incomeCertificatePath != null}" class="tag tag-danger">No
+                            Document</span>
+                    </div>
+                    <a th:if="${student.incomeCertificatePath != null}" th:href="@{${student.incomeCertificatePath}}"
+                        target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- Community -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>Community Certificate</h4>
+                        <span th:if="${student.communityCertificatePath != null}" class="tag tag-success">Uploaded &
+                            Available</span>
+                        <span th:unless="${student.communityCertificatePath != null}" class="tag tag-danger">No
+                            Document</span>
+                    </div>
+                    <a th:if="${student.communityCertificatePath != null}"
+                        th:href="@{${student.communityCertificatePath}}" target="_blank" class="btn btn-primary"
+                        style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- Bank -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>Bank Passbook Front Page</h4>
+                        <span th:if="${student.bankPassbookPath != null}" class="tag tag-success">Uploaded &
+                            Available</span>
+                        <span th:unless="${student.bankPassbookPath != null}" class="tag tag-danger">No Document</span>
+                    </div>
+                    <a th:if="${student.bankPassbookPath != null}" th:href="@{${student.bankPassbookPath}}"
+                        target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- Marksheet -->
+                <div class="doc-card" style="margin-bottom: 0;">
+                    <div class="doc-info">
+                        <h4><i class="fas fa-file-lines" style="color: var(--primary); margin-right: 0.5rem;"></i>Marksheet</h4>
+                        <span th:if="${student.marksheetPath != null}" class="tag tag-success">Uploaded &
+                            Available</span>
+                        <span th:unless="${student.marksheetPath != null}" class="tag tag-danger">No Document</span>
+                    </div>
+                    <a th:if="${student.marksheetPath != null}" th:href="@{${student.marksheetPath}}"
+                        target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

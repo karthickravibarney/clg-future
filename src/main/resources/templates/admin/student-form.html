@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Add New Student</title>
+</head>
+
+<body>
+    <div layout:fragment="title">Add Student</div>
+
+    <div layout:fragment="content">
+        <div class="card" style="max-width: 600px; margin: 0 auto; padding: 0; overflow: hidden;">
+            <div
+                style="background: var(--grad-ocean); padding: 2rem; color: white; display: flex; align-items: center; gap: 1rem;">
+                <div
+                    style="width: 48px; height: 48px; border-radius: 12px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div>
+                    <h2 style="margin: 0; font-size: 1.4rem; font-weight: 800; font-family: 'Outfit', sans-serif;"
+                        th:text="${isEdit} ? 'Edit Student Details' : 'Student Enrollment'">Student Enrollment</h2>
+                    <p style="margin: 0.2rem 0 0 0; font-size: 0.9rem; opacity: 0.9;">Required information for student
+                        records</p>
+                </div>
+            </div>
+            <div style="padding: 2rem;">
+                <!-- Error Alert -->
+                <div th:if="${error}" class="alert alert-danger" style="margin-bottom: 1.5rem;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span th:text="${error}">Error message</span>
+                </div>
+
+                <form th:action="@{/admin/students/save}" method="post" th:object="${student}">
+                    <input type="hidden" th:field="*{id}" />
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name</label>
+                        <input type="text" th:field="*{fullName}" class="form-control"
+                            style="background: white; color: black; border: 1px solid #cbd5e1;" required>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email</label>
+                        <input type="email" th:field="*{email}" class="form-control"
+                            style="background: white; color: black; border: 1px solid #cbd5e1;" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Department</label>
+                            <select th:field="*{department.id}" class="form-control"
+                                style="background: white; color: black; border: 1px solid #cbd5e1;" required>
+                                <option th:each="dept : ${departments}" th:value="${dept.id}" th:text="${dept.name}">
+                                </option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Batch</label>
+                            <select th:field="*{batch.id}" class="form-control"
+                                style="background: white; color: black; border: 1px solid #cbd5e1;" required>
+                                <option th:each="batch : ${batches}" th:value="${batch.id}" th:text="${batch.name}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div th:unless="${isEdit}"
+                        style="padding: 1rem; background: #f8fafc; border-radius: 10px; margin-bottom: 1.5rem; border: 1px dashed #cbd5e1;">
+                        <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">
+                            <i class="fas fa-info-circle"></i> Roll Number and temporary password will be automatically
+                            generated upon submission.
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn btn-primary"
+                            th:text="${isEdit} ? 'Save Changes' : 'Enrol Student'">Enrol Student</button>
+                        <a th:href="@{/admin/students}" class="btn"
+                            style="background: #e2e8f0; color: #475569;">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

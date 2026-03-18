@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Mark Attendance - SmartCampus</title>
+</head>
+
+<body>
+    <div layout:fragment="title">Attendance Management</div>
+
+    <div layout:fragment="content">
+        <!-- Success Alert -->
+        <div th:if="${success}" class="alert alert-success" style="margin-bottom: 2rem;">
+            <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+            <span th:text="${success}">Attendance updated successfully</span>
+        </div>
+
+        <!-- Error Alert -->
+        <div th:if="${error}" class="alert alert-danger" style="margin-bottom: 2rem; background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; padding: 1rem; border-radius: 8px;">
+            <i class="fas fa-exclamation-circle" style="margin-right: 0.5rem;"></i>
+            <span th:text="${error}">Error message</span>
+        </div>
+
+        <div class="card">
+            <div class="card-header"
+                style="background: var(--grad-sunset); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 2rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none; flex-wrap: wrap; gap: 1.5rem;">
+                <div style="display: flex; flex-direction: column; flex: 1; min-width: 300px;">
+                    <h2 class="card-title" style="color: white; font-size: 1.8rem; font-weight: 800;"><i
+                            class="fas fa-clipboard-user"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 12px; margin-right: 0.5rem;"></i>
+                        Daily Attendance Log</h2>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; opacity: 0.9;"
+                        th:text="${'Recording for ' + #temporals.format(#temporals.createNow(), 'EEEE, dd MMMM yyyy')}">
+                        Date</p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <form th:action="@{/staff/attendance}" method="get" id="batchForm"
+                        style="display: flex; gap: 1rem; align-items: center;">
+                        <input type="hidden" name="period" th:value="${currentPeriod}">
+                        <label for="batchSelect"
+                            style="font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.9);">Select
+                            Batch:</label>
+                        <select name="batchId" id="batchSelect" class="form-control"
+                            style="width: 200px; padding: 0.4rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);"
+                            onchange="this.form.submit()">
+                            <option value="" style="color: var(--text-main);">Choose Batch...</option>
+                            <option th:each="b : ${batches}" th:value="${b.id}" th:text="${b.name}"
+                                th:selected="${selectedBatchId != null and selectedBatchId == b.id}"
+                                style="color: var(--text-main);"></option>
+                        </select>
+                    </form>
+
+                    <div class="period-selector" style="display: flex; gap: 0.5rem; width: 100%; flex-wrap: wrap;">
+                        <a th:each="p : ${#numbers.sequence(1, 8)}"
+                            th:href="@{/staff/attendance(period=${p}, batchId=${selectedBatchId})}" class="period-btn"
+                            th:classappend="${currentPeriod == p} ? 'active' : ''" style="position: relative;">
+                            <span th:text="${'Period ' + p}">Period 1</span>
+                            <span th:if="${activePeriod != null and activePeriod == p}"
+                                style="position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: 800;">NOW</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .period-btn {
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    border: 1px solid var(--border-color);
+                    text-decoration: none;
+                    color: var(--text-muted);
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                    transition: var(--transition);
+                }
+
+                .period-btn:hover {
+                    background: var(--bg-main);
+                    color: var(--primary);
+                }
+
+                .period-btn.active {
+                    background: var(--primary);
+                    color: white;
+                    border-color: var(--primary);
+                    box-shadow: 0 4px 12px rgba(67, 56, 202, 0.2);
+                }
+            </style>
+
+            <div th:if="${not #lists.isEmpty(students)}" class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Roll Number</th>
+                            <th>Student Name</th>
+                            <th>Batch</th>
+                            <th>Current Status</th>
+                            <th style="text-align: center;">Mark Attendance</th>
+                            <th style="text-align: right;">Profile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="student : ${students}">
+                            <td style="font-weight: 600; color: var(--primary); font-family: 'Outfit', sans-serif;"
+                                th:text="${student.rollNumber}">STU2024CS001</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.8rem;"
+                                        th:text="${student.fullName.substring(0, 1).toUpperCase()}">J</div>
+                                    <span th:text="${student.fullName}">John Doe</span>
+                                </div>
+                            </td>
+                            <td><span class="tag tag-info" th:text="${student.batch.name}">2022-26</span></td>
+                            <td>
+                                <span th:if="${attendanceMap != null and attendanceMap.containsKey(student.id)}">
+                                    <span th:if="${attendanceMap.get(student.id).isPresent}"
+                                        class="tag tag-success">Present</span>
+                                    <span th:unless="${attendanceMap.get(student.id).isPresent}"
+                                        class="tag tag-danger">Absent</span>
+                                    <div th:if="${attendanceMap.get(student.id).markedBy != null}"
+                                        style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                        Marked by: <span
+                                            th:text="${attendanceMap.get(student.id).markedBy.employeeId == session.username ? 'You' : attendanceMap.get(student.id).markedBy.fullName}">Staff
+                                            Name</span>
+                                    </div>
+                                </span>
+                                <span th:unless="${attendanceMap != null and attendanceMap.containsKey(student.id)}"
+                                    class="tag tag-warning">Not Marked</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <div th:if="${canMarkAttendance}" style="display: inline-flex; gap: 0.5rem;">
+                                    <form th:action="@{/staff/attendance/mark}" method="post">
+                                        <input type="hidden" name="studentId" th:value="${student.id}">
+                                        <input type="hidden" name="isPresent" value="true">
+                                        <input type="hidden" name="period" th:value="${currentPeriod}">
+                                        <input type="hidden" name="batchId" th:value="${selectedBatchId}">
+                                        <button type="submit" class="btn btn-primary"
+                                            style="background: #10b981; border: none; padding: 0.4rem 0.8rem; font-size: 0.75rem;">
+                                            <i class="fas fa-check"></i> Present
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/staff/attendance/mark}" method="post">
+                                        <input type="hidden" name="studentId" th:value="${student.id}">
+                                        <input type="hidden" name="isPresent" value="false">
+                                        <input type="hidden" name="period" th:value="${currentPeriod}">
+                                        <input type="hidden" name="batchId" th:value="${selectedBatchId}">
+                                        <button type="submit" class="btn btn-primary"
+                                            style="background: var(--accent); border: none; padding: 0.4rem 0.8rem; font-size: 0.75rem;">
+                                            <i class="fas fa-xmark"></i> Absent
+                                        </button>
+                                    </form>
+                                </div>
+                                <div th:unless="${canMarkAttendance}">
+                                    <span style="font-size: 0.75rem; color: var(--text-muted); background: rgba(0,0,0,0.05); padding: 0.3rem 0.6rem; border-radius: 4px; border: 1px dashed rgba(0,0,0,0.1);">
+                                        <i class="fas fa-lock" style="margin-right: 4px;"></i> View Only
+                                    </span>
+                                </div>
+                            </td>
+                            <td style="text-align: right;">
+                                <a th:href="@{/staff/student/{id}(id=${student.id})}" class="btn btn-outline"
+                                    style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${#lists.isEmpty(students)}"
+                style="padding: 4rem; text-align: center; color: var(--text-muted);">
+                <i class="fas fa-users-slash"
+                    style="font-size: 2.5rem; margin-bottom: 1.5rem; display: block; opacity: 0.5;"></i>
+                <p th:if="${selectedBatchId == null}">Please select a batch to view students.</p>
+                <p th:if="${selectedBatchId != null}">No students found for the selected batch.</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

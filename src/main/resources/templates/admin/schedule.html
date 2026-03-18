@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Manage Exam Schedule - SmartCampus</title>
+</head>
+
+<body>
+    <div layout:fragment="title">Manage Exam Schedule</div>
+
+    <div layout:fragment="content">
+        <!-- Alerts -->
+        <div th:if="${success}"
+            style="background: rgba(16, 185, 129, 0.1); color: #059669; padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; border: 1px solid rgba(16, 185, 129, 0.2);">
+            <i class="fas fa-check-circle" style="font-size: 1.25rem;"></i>
+            <span th:text="${success}" style="font-weight: 500;"></span>
+        </div>
+        <div th:if="${error}"
+            style="background: rgba(244, 63, 94, 0.1); color: #e11d48; padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; border: 1px solid rgba(244, 63, 94, 0.2);">
+            <i class="fas fa-exclamation-circle" style="font-size: 1.25rem;"></i>
+            <span th:text="${error}" style="font-weight: 500;"></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 350px 1fr; gap: 2rem; align-items: start;">
+
+            <!-- Add New Exam Schedule Form -->
+            <div class="card" style="margin-bottom: 0; position: sticky; top: 100px;">
+                <div class="card-header"
+                    style="background: var(--grad-primary); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 1.5rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                    <h2 class="card-title" style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0;"><i
+                            class="fas fa-calendar-plus"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 10px; margin-right: 0.5rem;"></i>
+                        Add Exam Entry</h2>
+                </div>
+                <form th:action="@{/admin/schedule/add}" method="post">
+                    <div class="form-group">
+                        <label class="form-label" for="batchId">Select Batch</label>
+                        <select id="batchId" name="batchId" class="form-control" required style="cursor: pointer;">
+                            <option value="">-- Select Batch --</option>
+                            <th:block th:each="dept : ${departments}">
+                                <optgroup th:label="${dept.name}">
+                                    <th:block th:each="batch : ${batches}" th:if="${batch.department.id == dept.id}">
+                                        <option th:value="${batch.id}" th:text="${batch.name}">Batch Name</option>
+                                    </th:block>
+                                </optgroup>
+                            </th:block>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" class="form-control" required
+                            placeholder="e.g. Data Structures">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="examTime">Date & Time</label>
+                        <input type="datetime-local" id="examTime" name="examTime" class="form-control" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label class="form-label" for="venue">Venue / Room</label>
+                        <input type="text" id="venue" name="venue" class="form-control" required
+                            placeholder="e.g. Hall A, DB-104">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; justify-content: center; padding: 0.8rem;">
+                        <i class="fas fa-plus"></i> Add Schedule
+                    </button>
+                </form>
+            </div>
+
+            <!-- Existing Schedules Table -->
+            <div class="card" style="margin-bottom: 0;">
+                <div class="card-header"
+                    style="background: var(--grad-ocean); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 1.5rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                    <h2 class="card-title" style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0;"><i
+                            class="fas fa-calendar-days"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 10px; margin-right: 0.5rem;"></i>
+                        Existing Schedules</h2>
+                </div>
+
+                <div class="table-container" style="border: none;">
+                    <table th:if="${not #lists.isEmpty(schedules)}">
+                        <thead>
+                            <tr
+                                style="background: rgba(241, 245, 249, 0.5); border-bottom: 2px solid var(--border-color);">
+                                <th>Exam Details</th>
+                                <th>Date & Time</th>
+                                <th>Venue</th>
+                                <th style="text-align: right; width: 80px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="e : ${schedules}" style="border-bottom: 1px solid var(--border-color);">
+                                <td>
+                                    <div style="font-weight: 600; color: var(--text-main); font-family: 'Outfit', sans-serif;"
+                                        th:text="${e.subject}">Subject Name</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;"
+                                        th:text="${e.batch.department.code + ' - ' + e.batch.name}">Dept - Batch</div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 500; color: var(--text-main);"
+                                        th:text="${#temporals.format(e.examTime, 'dd MMM yyyy')}">Date</div>
+                                    <div style="font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-top: 0.2rem;"
+                                        th:text="${#temporals.format(e.examTime, 'hh:mm a')}">Time</div>
+                                </td>
+                                <td>
+                                    <span class="tag tag-info" style="font-family: inherit; font-size: 0.8rem;"
+                                        th:text="${e.venue}">Venue</span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <button type="button" class="btn-action" style="color: #ef4444;"
+                                        title="Delete Schedule"
+                                        th:attr="onclick=|showDeleteModal('@{/admin/schedule/delete/{id}(id=${e.id})}')|">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div th:if="${#lists.isEmpty(schedules)}"
+                        style="text-align: center; padding: 4rem 2rem; background: var(--bg-main); border-radius: var(--radius-md);">
+                        <i class="fas fa-calendar-xmark"
+                            style="font-size: 3rem; color: var(--text-muted); opacity: 0.3; margin-bottom: 1rem; display: block;"></i>
+                        <h3
+                            style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 0.5rem; font-family: 'Outfit', sans-serif;">
+                            No Exam Schedules Found</h3>
+                        <p
+                            style="color: var(--text-muted); font-size: 0.9rem; margin: 0; max-width: 300px; margin: 0 auto;">
+                            There are currently no active exam schedules for any batches. Use the form to create one.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="modal"
+            style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+            <div class="modal-content"
+                style="background: white; padding: 2rem; border-radius: var(--radius-lg); max-width: 400px; width: 90%; text-align: center; box-shadow: var(--card-hover-shadow);">
+                <div
+                    style="width: 60px; height: 60px; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 1.5rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 style="margin: 0 0 1rem; font-size: 1.25rem;">Confirm Deletion</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem; line-height: 1.5;">Are you sure you want to
+                    delete this exam schedule? This action cannot be undone.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button type="button" onclick="closeDeleteModal()" class="btn btn-outline"
+                        style="flex: 1;">Cancel</button>
+                    <form id="deleteForm" method="post" style="display: inline-block; flex: 1; margin: 0;">
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; background: #dc2626; border-color: #dc2626;">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function showDeleteModal(deleteUrl) {
+                document.getElementById('deleteForm').action = deleteUrl;
+                document.getElementById('deleteModal').style.display = 'flex';
+            }
+
+            function closeDeleteModal() {
+                document.getElementById('deleteModal').style.display = 'none';
+            }
+
+            window.onclick = function (event) {
+                var modal = document.getElementById('deleteModal');
+                if (event.target == modal) {
+                    closeDeleteModal();
+                }
+            }
+        </script>
+    </div>
+</body>
+
+</html>

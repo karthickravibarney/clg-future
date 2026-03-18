@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Period Timings - SmartCampus</title>
+</head>
+
+<body>
+    <div layout:fragment="title">Period Timings Configuration</div>
+
+    <div layout:fragment="content">
+        <div th:if="${success}" class="alert alert-success" style="margin-bottom: 2rem;">
+            <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+            <span th:text="${success}">Updated successfully</span>
+        </div>
+
+        <div class="card">
+            <div class="card-header"
+                style="background: var(--grad-emerald); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 2rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <h2 class="card-title" style="color: white; font-size: 1.8rem; font-weight: 800; margin: 0;"><i
+                        class="fas fa-clock"
+                        style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 12px; margin-right: 0.5rem;"></i>
+                    Department Period Timings</h2>
+                <form th:action="@{/admin/timings}" method="get" style="display: flex; gap: 1rem;">
+                    <select name="deptId" class="form-control"
+                        style="width: 250px; padding: 0.5rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);"
+                        onchange="this.form.submit()">
+                        <option value="" style="color: var(--text-main);">Select Department</option>
+                        <option th:each="d : ${departments}" th:value="${d.id}" th:text="${d.name}"
+                            th:selected="${selectedDept != null and selectedDept.id == d.id}"
+                            style="color: var(--text-main);"></option>
+                    </select>
+                </form>
+            </div>
+
+            <div th:if="${selectedDept}" class="table-container">
+                <form th:action="@{/admin/timings/save-all}" method="post">
+                    <input type="hidden" name="deptId" th:value="${selectedDept.id}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Period</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Is Break?</th>
+                                <th>Break Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${#numbers.sequence(1, 11)}"
+                                th:with="timing=${timingsMap != null ? timingsMap.get(p) : null}">
+                                <td style="font-weight: 600;">
+                                    <span th:if="${p != 3 and p != 6 and p != 9}" th:text="${'Period ' + (p < 3 ? p : (p < 6 ? p - 1 : (p < 9 ? p - 2 : p - 3)))}">Period 1</span>
+                                </td>
+                                <td>
+                                    <input type="text" th:name="'start_' + ${p}" class="form-control"
+                                        th:value="${timing != null ? timing.startTime : ''}" placeholder="09:00 AM">
+                                </td>
+                                <td>
+                                    <input type="text" th:name="'end_' + ${p}" class="form-control"
+                                        th:value="${timing != null ? timing.endTime : ''}" placeholder="09:50 AM">
+                                </td>
+                                <td style="text-align: center;">
+                                    <label class="switch">
+                                        <input type="checkbox" th:name="'isBreak_' + ${p}"
+                                            th:checked="${timing != null and timing.isBreak}"
+                                            onchange="toggleBreak(this)">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input type="text" th:name="'breakName_' + ${p}"
+                                        class="form-control break-name-input"
+                                        th:value="${timing != null ? timing.breakName : ''}" placeholder="e.g. Lunch"
+                                        th:disabled="${timing == null or !timing.isBreak}">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+                        <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2.5rem; font-weight: 700;">
+                            <i class="fas fa-save" style="margin-right: 0.5rem;"></i> Save All Timings
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div th:unless="${selectedDept}" style="padding: 4rem; text-align: center; color: var(--text-muted);">
+                <i class="fas fa-arrow-up" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                Please select a department to configure its period timings.
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="script">
+        function toggleBreak(checkbox) {
+            const row = checkbox.closest('tr');
+            const breakNameInput = row.querySelector('.break-name-input');
+            breakNameInput.disabled = !checkbox.checked;
+            if (!checkbox.checked) {
+                breakNameInput.value = '';
+            }
+        }
+    </script>
+    <style layout:fragment="style">
+        /* Simple Toggle Switch Style */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary);
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px var(--primary);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .break-name-input:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    </style>
+</body>
+
+</html>

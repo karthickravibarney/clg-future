@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Academic Results - SmartCampus</title>
+</head>
+
+<body>
+    <div layout:fragment="title">My Performance</div>
+
+    <div layout:fragment="content">
+        <div class="card">
+            <div class="card-header"
+                style="background: var(--grad-sunset); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 2rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                <div style="display: flex; flex-direction: column;">
+                    <h2 class="card-title" style="color: white; font-size: 1.8rem; font-weight: 800;"><i
+                            class="fas fa-award"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 12px; margin-right: 0.5rem;"></i>
+                        Semester Results</h2>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; opacity: 0.9;">Detailed breakdown of your
+                        subject-wise performance.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Semester</th>
+                            <th style="text-align: center;">Marks</th>
+                            <th>Grade Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="m : ${marks}">
+                            <td style="font-weight: 600; font-family: 'Outfit', sans-serif;" th:text="${m.subject}">
+                                Mathematics</td>
+                            <td><span class="tag tag-info" th:text="${'Sem ' + m.semester}">1</span></td>
+                            <td style="text-align: center;">
+                                <span style="font-weight: 700; color: var(--primary);"
+                                    th:text="${m.marksObtained}">85</span>
+                                <span style="color: var(--text-muted); font-size: 0.8rem;"
+                                    th:text="${' / ' + m.totalMarks}"> / 100</span>
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div
+                                        style="flex-grow: 1; height: 10px; background: var(--bg-main); border-radius: 10px; overflow: hidden; border: 1px solid var(--border-color);">
+                                        <div
+                                            th:style="'width: ' + (${m.marksObtained} / ${m.totalMarks} * 100) + '%; height: 100%; background: linear-gradient(to right, var(--primary-light), var(--primary)); border-radius: 10px; transition: width 1s ease-in-out;'">
+                                        </div>
+                                    </div>
+                                    <span
+                                        style="font-weight: 600; font-size: 0.85rem; min-width: 45px; text-align: right;"
+                                        th:text="${#numbers.formatDecimal(m.marksObtained / m.totalMarks * 100, 1, 0) + '%'}">85%</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(marks)}">
+                            <td colspan="4" style="text-align: center; padding: 4rem; color: var(--text-muted);">
+                                <i class="fas fa-file-circle-exclamation"
+                                    style="font-size: 2rem; display: block; margin-bottom: 1rem; opacity: 0.3;"></i>
+                                Your academic results have not been published for this period.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

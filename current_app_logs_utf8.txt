@@ -1,0 +1,62 @@
+﻿
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2026-03-12T09:59:34.036+05:30  INFO 18968 --- [erp] [           main] com.college.erp.ErpApplication           : Starting ErpApplication v0.0.1-SNAPSHOT using Java 25.0.1 with PID 18968 (D:\projects\clg\target\erp-0.0.1-SNAPSHOT.war started by Karthick R in D:\projects\clg)
+2026-03-12T09:59:34.048+05:30  INFO 18968 --- [erp] [           main] com.college.erp.ErpApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-03-12T09:59:39.121+05:30  INFO 18968 --- [erp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-12T09:59:39.621+05:30  INFO 18968 --- [erp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 430 ms. Found 11 JPA repository interfaces.
+java : WARNING: A restricted method in 
+java.lang.System has been called
+At line:1 char:1
++ java -jar target/erp-0.0.1-SNAPSHOT.war 
+> current_app_logs.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified 
+   : (WARNING: A rest...has been called:S  
+  tring) [], RemoteException
+    + FullyQualifiedErrorId : NativeComman 
+   dError
+ 
+WARNING: java.lang.System::load has been 
+called by org.apache.tomcat.jni.Library in 
+an unnamed module (jar:nested:/D:/projects/
+clg/target/erp-0.0.1-SNAPSHOT.war/!WEB-INF/
+lib-provided/tomcat-embed-core-10.1.36.jar!
+/)
+WARNING: Use 
+--enable-native-access=ALL-UNNAMED to 
+avoid a warning for callers in this module
+WARNING: Restricted methods will be 
+blocked in a future release unless native 
+access is enabled
+
+2026-03-12T09:59:43.699+05:30  INFO 18968 --- [erp] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8095 (http)
+2026-03-12T09:59:43.801+05:30  INFO 18968 --- [erp] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-12T09:59:43.805+05:30  INFO 18968 --- [erp] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2026-03-12T09:59:44.262+05:30  INFO 18968 --- [erp] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-12T09:59:44.269+05:30  INFO 18968 --- [erp] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 8966 ms
+2026-03-12T09:59:45.311+05:30  INFO 18968 --- [erp] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-12T09:59:45.666+05:30  INFO 18968 --- [erp] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2026-03-12T09:59:45.891+05:30  INFO 18968 --- [erp] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-12T09:59:47.494+05:30  INFO 18968 --- [erp] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-12T09:59:47.673+05:30  INFO 18968 --- [erp] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-12T09:59:48.558+05:30  INFO 18968 --- [erp] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@d8e4250
+2026-03-12T09:59:48.566+05:30  INFO 18968 --- [erp] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-12T09:59:48.796+05:30  WARN 18968 --- [erp] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-12T09:59:48.886+05:30  INFO 18968 --- [erp] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.28
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+

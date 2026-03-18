@@ -1,0 +1,85 @@
+﻿
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.3)
+
+2026-03-12T09:58:23.833+05:30  INFO 3848 --- [erp] [           main] com.college.erp.ErpApplication           : Starting ErpApplication v0.0.1-SNAPSHOT using Java 25.0.1 with PID 3848 (D:\projects\clg\target\erp-0.0.1-SNAPSHOT.war started by Karthick R in D:\projects\clg)
+2026-03-12T09:58:23.844+05:30  INFO 3848 --- [erp] [           main] com.college.erp.ErpApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-03-12T09:58:28.900+05:30  INFO 3848 --- [erp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-12T09:58:29.404+05:30  INFO 3848 --- [erp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 442 ms. Found 11 JPA repository interfaces.
+java : WARNING: A restricted method in 
+java.lang.System has been called
+At line:1 char:1
++ java -jar target/erp-0.0.1-SNAPSHOT.war 
+> startup_logs_latest.txt 2>& ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified 
+   : (WARNING: A rest...has been called:S  
+  tring) [], RemoteException
+    + FullyQualifiedErrorId : NativeComman 
+   dError
+ 
+WARNING: java.lang.System::load has been 
+called by org.apache.tomcat.jni.Library in 
+an unnamed module (jar:nested:/D:/projects/
+clg/target/erp-0.0.1-SNAPSHOT.war/!WEB-INF/
+lib-provided/tomcat-embed-core-10.1.36.jar!
+/)
+WARNING: Use 
+--enable-native-access=ALL-UNNAMED to 
+avoid a warning for callers in this module
+WARNING: Restricted methods will be 
+blocked in a future release unless native 
+access is enabled
+
+2026-03-12T09:58:33.296+05:30  INFO 3848 --- [erp] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8095 (http)
+2026-03-12T09:58:33.374+05:30  INFO 3848 --- [erp] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-12T09:58:33.377+05:30  INFO 3848 --- [erp] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2026-03-12T09:58:33.821+05:30  INFO 3848 --- [erp] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-03-12T09:58:33.824+05:30  INFO 3848 --- [erp] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 8768 ms
+2026-03-12T09:58:35.084+05:30  INFO 3848 --- [erp] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-12T09:58:35.566+05:30  INFO 3848 --- [erp] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2026-03-12T09:58:35.938+05:30  INFO 3848 --- [erp] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-12T09:58:38.004+05:30  INFO 3848 --- [erp] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-12T09:58:38.189+05:30  INFO 3848 --- [erp] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-12T09:58:39.249+05:30  INFO 3848 --- [erp] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@43ab9ae9
+2026-03-12T09:58:39.261+05:30  INFO 3848 --- [erp] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-12T09:58:39.510+05:30  WARN 3848 --- [erp] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-12T09:58:39.621+05:30  INFO 3848 --- [erp] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.28
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-12T09:58:45.438+05:30  INFO 3848 --- [erp] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-12T09:58:46.001+05:30  INFO 3848 --- [erp] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-12T09:58:49.159+05:30  WARN 3848 --- [erp] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-12T09:58:51.857+05:30  WARN 3848 --- [erp] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2026-03-12T09:58:51.866+05:30  INFO 3848 --- [erp] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-12T09:58:51.883+05:30  INFO 3848 --- [erp] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-12T09:58:51.926+05:30  INFO 3848 --- [erp] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-12T09:58:51.974+05:30  INFO 3848 --- [erp] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-03-12T09:58:52.081+05:30 ERROR 3848 --- [erp] [           main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8095 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8095 or configure this application to listen on another port.
+

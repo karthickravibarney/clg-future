@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Exam Schedule - SmartCampus</title>
+</head>
+
+<body>
+    <div layout:fragment="title">Examination Schedule</div>
+
+    <div layout:fragment="content">
+        <div class="card">
+            <div class="card-header"
+                style="background: var(--grad-primary); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 2rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                <div style="display: flex; flex-direction: column;">
+                    <h2 class="card-title" style="color: white; font-size: 1.8rem; font-weight: 800;"><i
+                            class="fas fa-calendar-days"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 12px; margin-right: 0.5rem;"></i>
+                        Upcoming Examination Dates</h2>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; opacity: 0.9;">Please arrive at the venue 15
+                        minutes before the start time.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject & Course Code</th>
+                            <th>Date & Time</th>
+                            <th style="text-align: right;">Exam Venue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="e : ${exams}">
+                            <td style="font-weight: 600; font-family: 'Outfit', sans-serif;" th:text="${e.subject}">
+                                Mathematics</td>
+                            <td th:text="${#temporals.format(e.examTime, 'dd MMM yyyy, HH:mm')}">10 Oct, 10:00</td>
+                            <td style="text-align: right;">
+                                <span class="tag tag-info"
+                                    style="font-family: 'Inter', sans-serif; padding-left: 1rem; padding-right: 1rem;"
+                                    th:text="${e.venue}">Hall A</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(exams)}">
+                            <td colspan="3" style="text-align: center; padding: 4rem; color: var(--text-muted);">
+                                <i class="fas fa-calendar-xmark"
+                                    style="font-size: 2rem; display: block; margin-bottom: 1rem; opacity: 0.3;"></i>
+                                No examination schedules have been published for this semester yet.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

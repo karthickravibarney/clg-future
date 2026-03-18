@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Manage Timetable - SmartCampus</title>
+    <style>
+        .highlight-period {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+            border: none !important;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            transform: scale(1.02);
+            z-index: 10;
+            border-radius: 8px !important;
+            transition: all 0.3s ease;
+        }
+
+        .highlight-period:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
+        }
+
+        .highlight-period::after {
+            content: 'YOUR CLASS';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            font-size: 0.6rem;
+            background: #10b981;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 20px;
+            font-weight: 800;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.5px;
+            z-index: 20;
+        }
+
+        .highlight-period input,
+        .highlight-period select {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .highlight-period input::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .highlight-period .btn-action {
+            background: white !important;
+            color: var(--primary) !important;
+            font-weight: 700 !important;
+        }
+
+        .table-container {
+             overflow-x: auto;
+             margin-top: 1rem;
+         }
+         /* Timetable table styling */
+         .timetable-table {
+             width: 100%;
+             border-collapse: collapse;
+         }
+         .timetable-table th, .timetable-table td {
+             padding: 0.5rem 0.75rem;
+             border: 1px solid var(--border-color, #e5e7eb);
+             text-align: center;
+         }
+         .timetable-table th {
+             background: var(--bg-header, #f3f4f6);
+             font-weight: 600;
+         }
+         .timetable-table td {
+             background: var(--bg-cell, #ffffff);
+         }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="title">Timetable Management</div>
+
+    <div layout:fragment="content">
+        <div th:if="${success}" class="alert alert-success" style="margin-bottom: 2rem;">
+            <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+            <span th:text="${success}">Updated successfully</span>
+        </div>
+
+        <div class="card">
+            <div class="card-header"
+                style="background: var(--grad-sunset); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 2rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <h2 class="card-title" style="color: white; font-size: 1.8rem; font-weight: 800; margin: 0;"><i
+                        class="fas fa-calendar-alt"
+                        style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 12px; margin-right: 0.5rem;"></i>
+                    Batch Timetable</h2>
+                <form th:action="@{/admin/timetable}" method="get"
+                    style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <select name="batchId" class="form-control"
+                        style="width: 200px; padding: 0.5rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);"
+                        onchange="this.form.submit()">
+                        <option value="" style="color: var(--text-main);">Select Batch</option>
+                        <option th:each="b : ${batches}" th:value="${b.id}"
+                            th:text="${b.department.code + ' - ' + b.name}"
+                            th:selected="${selectedBatch != null and selectedBatch.id == b.id}"
+                            style="color: var(--text-main);"></option>
+                    </select>
+
+                    <select name="year" class="form-control"
+                        style="width: 120px; padding: 0.5rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);"
+                        onchange="this.form.submit()" required>
+                        <option value="" style="color: var(--text-main);">Year</option>
+                        <option th:each="y : ${#numbers.sequence(1, maxYears)}" th:value="${y}"
+                            th:text="${y + (y == 1 ? 'st' : (y == 2 ? 'nd' : (y == 3 ? 'rd' : 'th'))) + ' Year'}"
+                            th:selected="${selectedYear == y}" style="color: var(--text-main);"></option>
+                    </select>
+
+                    <select name="semester" class="form-control"
+                        style="width: 140px; padding: 0.5rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);"
+                        onchange="this.form.submit()" required>
+                        <option value="" style="color: var(--text-main);">Semester</option>
+                        <option th:each="s : ${#numbers.sequence(1, maxSemesters)}" th:value="${s}"
+                            th:text="'Semester ' + ${s}" th:selected="${selectedSemester == s}"
+                            style="color: var(--text-main);"></option>
+                    </select>
+                </form>
+            </div>
+
+            <div th:if="${selectedBatch}" class="table-container">
+                <form th:action="@{/admin/timetable/save-all}" method="post">
+                    <input type="hidden" name="batchId" th:value="${selectedBatch.id}">
+                    <input type="hidden" name="year" th:value="${selectedYear}">
+                    <input type="hidden" name="semester" th:value="${selectedSemester}">
+
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 2rem;">
+                        <button type="submit" class="btn btn-primary"
+                            style="padding: 1rem 3rem; font-weight: 800; font-size: 1.1rem; box-shadow: var(--shadow-lg); transition: all 0.3s ease;">
+                            <i class="fas fa-save" style="margin-right: 0.5rem;"></i> Save Entire Timetable
+                        </button>
+                    </div>
+
+                    <table class="timetable-table">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th th:each="p : ${#numbers.sequence(1, 11)}" 
+                                    th:text="${p == 3 or p == 6 or p == 9 ? '' : 'Period ' + (p < 3 ? p : (p < 6 ? p - 1 : (p < 9 ? p - 2 : p - 3)))}">Period 1</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="day : ${T(java.time.DayOfWeek).values()}" th:if="${day.value <= 5}">
+                                <td th:text="${day.name()}" style="font-weight: 700; background: var(--bg-main); font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); padding: 0.25rem 0.5rem;">MONDAY
+                                </td>
+                                <td th:each="p : ${#numbers.sequence(1, 11)}" th:with="entry=${timetableMap != null and timetableMap.get(day.name()) != null ? timetableMap.get(day.name()).get(p) : null},
+                                            timing=${timingsMap != null ? timingsMap.get(p) : null}">
+
+                                    <!-- Break Display -->
+                                    <div th:if="${timing != null and timing.isBreak}"
+                                        th:style="${p == 3 or p == 6 or p == 9 ? 'text-align: center; background: #fef3c7; border: 1px dashed #f59e0b; padding: 0.25rem; border-radius: 6px; color: #92400e; pointer-events: none;' : 'text-align: center; background: #fef3c7; border: 1px dashed #f59e0b; padding: 0.5rem; border-radius: 8px; color: #92400e; pointer-events: none;'}"
+                                        style="text-align: center; background: #fef3c7; border: 1px dashed #f59e0b; padding: 0.5rem; border-radius: 8px; color: #92400e; pointer-events: none;">
+                                        <i class="fas fa-coffee"
+                                            th:style="${p == 3 or p == 6 or p == 9 ? 'display: block; font-size: 0.8rem; margin-bottom: 0.1rem; opacity: 0.6;' : 'display: block; font-size: 1rem; margin-bottom: 0.25rem; opacity: 0.6;'}"
+                                            style="display: block; font-size: 1rem; margin-bottom: 0.25rem; opacity: 0.6;"></i>
+                                        <span
+                                            th:style="${p == 3 or p == 6 or p == 9 ? 'font-weight: 800; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px;' : 'font-weight: 800; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;'}"
+                                            style="font-weight: 800; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;"
+                                            th:text="${timing.breakName != null ? timing.breakName : 'BREAK'}">BREAK</span>
+                                    </div>
+
+                                    <!-- Standard Entry -->
+                                    <div th:unless="${timing != null and timing.isBreak}"
+                                        th:classappend="${entry != null and entry.staff != null and entry.staff.id == currentStaffId ? 'highlight-period' : ''}"
+                                        th:style="${p == 3 or p == 6 or p == 9 ? 'padding: 0.4rem; border-radius: 6px; background: rgba(248, 250, 252, 0.5); border: 1px solid #e2e8f0; transition: all 0.2s ease;' : 'padding: 0.8rem; border-radius: 10px; background: rgba(248, 250, 252, 0.5); border: 1px solid #e2e8f0; transition: all 0.2s ease;'}"
+                                        style="padding: 0.8rem; border-radius: 10px; background: rgba(248, 250, 252, 0.5); border: 1px solid #e2e8f0; transition: all 0.2s ease;">
+                                        <input type="text" th:name="${'subject_' + day.name() + '_' + p}"
+                                            class="form-control" placeholder="Subject"
+                                            th:value="${entry != null ? entry.subjectName : ''}"
+                                            th:style="${p == 3 or p == 6 or p == 9 ? 'margin-bottom: 0.25rem; font-size: 0.8rem; padding: 0.25rem; border-radius: 4px;' : 'margin-bottom: 0.5rem; font-size: 1rem; font-weight: 600; padding: 0.5rem; border-radius: 6px;'}"
+                                            style="margin-bottom: 0.5rem; font-size: 1rem; font-weight: 600; padding: 0.5rem; border-radius: 6px;">
+                                        <select th:name="${'staffId_' + day.name() + '_' + p}" class="form-control"
+                                            th:style="${p == 3 or p == 6 or p == 9 ? 'font-size: 0.75rem; padding: 0.25rem; border-radius: 4px;' : 'font-size: 0.9rem; padding: 0.5rem; border-radius: 6px;'}"
+                                            style="font-size: 0.9rem; padding: 0.5rem; border-radius: 6px;">
+                                            <option value="">Select Staff</option>
+                                            <option th:each="s : ${staffMembers}" th:value="${s.id}"
+                                                th:text="${s.fullName}"
+                                                th:selected="${entry != null and entry.staff != null and entry.staff.id == s.id}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div
+                        style="margin-top: 3rem; display: flex; justify-content: center; background: var(--bg-main); padding: 2rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <button type="submit" class="btn btn-primary"
+                            style="padding: 1rem 4rem; font-weight: 800; font-size: 1.2rem; box-shadow: var(--shadow-xl); transform: scale(1.05);">
+                            <i class="fas fa-save" style="margin-right: 0.75rem;"></i> Save Weekly Timetable
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div th:unless="${selectedBatch}" style="padding: 4rem; text-align: center; color: var(--text-muted);">
+                <i class="fas fa-arrow-up" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                Please select a batch to view and manage its timetable.
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

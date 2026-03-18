@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Fee Management</title>
+</head>
+
+<body>
+    <div layout:fragment="title">Fee Management</div>
+
+    <div layout:fragment="content">
+        <div class="card">
+            <h2 style="margin-top: 0; font-size: 1.25rem; margin-bottom: 1.5rem;">Student Fee Tracking</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Name</th>
+                        <th>Amount Due</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="student : ${students}">
+                        <td th:text="${student.rollNumber}">STU001</td>
+                        <td th:text="${student.fullName}">John Doe</td>
+                        <td>$5,000</td>
+                        <td><span class="tag tag-warning">Pending</span></td>
+                        <td>
+                            <button class="btn btn-primary"
+                                style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: #10b981;">
+                                Mark Paid
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>SmartCampus - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .login-split {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .login-visual {
+            flex: 1.2;
+            background: var(--grad-primary);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 5rem;
+            color: white;
+            overflow: hidden;
+        }
+
+        .login-visual::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+            border-radius: 50%;
+            animation: float-slow 15s infinite alternate;
+        }
+
+        .login-visual::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            right: -10%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+            border-radius: 50%;
+            animation: float-slow 12s infinite alternate-reverse;
+        }
+
+        @keyframes float-slow {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(40px, -50px) scale(1.1);
+            }
+        }
+
+        .visual-content {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+        }
+
+        .visual-logo {
+            font-size: 3.5rem;
+            margin-bottom: 2.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 28px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .visual-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1.5px;
+        }
+
+        .visual-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 3rem;
+            max-width: 90%;
+        }
+
+        /* Glassmorphism Testimonial Card */
+        .glass-testimonial {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            border-radius: 20px;
+            display: inline-flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .glass-testimonial img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-testimonial div {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .glass-testimonial span {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .login-form-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-main);
+            position: relative;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 460px;
+            padding: 3rem;
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .login-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-control {
+            background: var(--bg-main) !important;
+            padding: 1.1rem 1rem 1.1rem 3.2rem !important;
+            font-size: 1.05rem !important;
+            border: 2px solid transparent !important;
+            border-radius: 16px !important;
+            box-shadow: none !important;
+            color: var(--text-main) !important;
+        }
+
+        .form-control:focus {
+            background: white !important;
+            border-color: var(--primary-light) !important;
+            box-shadow: 0 0 0 5px var(--primary-soft) !important;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.2rem;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            top: 3.3rem;
+            /* Aligned vertically based on typical input height + label */
+            transition: color 0.3s ease;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .form-group:focus-within .input-icon {
+            color: var(--primary);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1.1rem;
+            font-size: 1.15rem;
+            border-radius: 16px;
+            background: var(--grad-primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: var(--btn-shadow);
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(1px);
+        }
+
+        @media (max-width: 900px) {
+            .login-visual {
+                display: none;
+            }
+
+            .login-form-container {
+                background: var(--grad-primary);
+                padding: 1rem;
+            }
+
+            .login-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-split">
+        <div class="login-visual">
+            <div class="visual-content">
+                <div class="visual-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1 class="visual-title">The Future of<br>Campus Management</h1>
+                <p class="visual-subtitle">Experience a seamless, powerful, and beautifully designed platform built
+                    exclusively for forward-thinking educational institutions.</p>
+
+                <div class="glass-testimonial">
+                    <div
+                        style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #fcd34d, #f59e0b); display: flex; align-items: center; justify-content: center; font-weight: 800; color: white;">
+                        A+</div>
+                    <div>
+                        "SmartCampus completely transformed our workflow."
+                        <span>— Top Rated Institution 2026</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-form-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h2>Welcome back</h2>
+                    <p>Enter your credentials to access your workspace.</p>
+                </div>
+
+                <form th:action="@{/login}" method="post">
+                    <div th:if="${param.error}" class="alert alert-error"
+                        style="border-radius: 12px; margin-bottom: 2rem; padding: 1rem; text-align: center; border: 1px solid rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.1); color: var(--danger);">
+                        <i class="fas fa-exclamation-circle"></i> Invalid Credentials. Please try again.
+                    </div>
+                    <div th:if="${param.logout}" class="alert alert-success"
+                        style="border-radius: 12px; margin-bottom: 2rem; padding: 1rem; text-align: center; border: 1px solid rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.1); color: var(--success);">
+                        <i class="fas fa-check-circle"></i> You have successfully logged out.
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 600; color: var(--text-main);">User ID / Roll
+                            Number</label>
+                        <i class="fas fa-user input-icon" style="top: 2.7rem;"></i>
+                        <input type="text" name="username" class="form-control" placeholder="Enter your ID" required>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label class="form-label" style="font-weight: 600; color: var(--text-main);">Password</label>
+                        <i class="fas fa-lock input-icon" style="top: 2.7rem;"></i>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        Sign In <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                    <div
+                        style="text-align: center; margin-top: 2.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">
+                        &copy; 2026 SmartCampus. All rights reserved.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

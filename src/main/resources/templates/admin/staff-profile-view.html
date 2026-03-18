@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Staff Profile - SmartCampus</title>
+    <style>
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2.5rem;
+            align-items: start;
+        }
+
+        .profile-side-card {
+            background: var(--white);
+            padding: 3rem 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            position: sticky;
+            top: 100px;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            font-size: 3rem;
+            font-family: 'Outfit', sans-serif;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 20px rgba(67, 56, 202, 0.2);
+            border: 4px solid white;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-main);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .doc-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .doc-card:hover {
+            border-color: var(--primary-light);
+            background: var(--bg-main);
+            transform: translateX(5px);
+        }
+
+        .doc-info h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            color: var(--primary);
+            transform: translateX(-4px);
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="title">Staff Profile Review</div>
+
+    <div layout:fragment="content">
+        <div style="margin-bottom: 1.5rem;">
+            <a href="javascript:history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Staff Directory
+            </a>
+        </div>
+
+        <div class="profile-grid">
+            <!-- Profile Column -->
+            <div class="profile-side-card">
+                <div class="avatar-preview" style="overflow: hidden; padding: 0;">
+                    <img th:if="${viewedStaff.profilePhotoPath != null}" th:src="@{${viewedStaff.profilePhotoPath}}"
+                        alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                    <span th:unless="${viewedStaff.profilePhotoPath != null}"
+                        th:text="${viewedStaff.fullName.substring(0, 1).toUpperCase()}">U</span>
+                </div>
+                <h2 style="margin: 0; font-size: 1.5rem;" th:text="${viewedStaff.fullName}">Staff Name</h2>
+                <div class="tag tag-warning" style="margin-top: 0.5rem;" th:text="${viewedStaff.designation}">Professor
+                </div>
+                <div class="tag tag-info" style="margin-top: 0.5rem;" th:text="${viewedStaff.employeeId}">EMP001</div>
+
+                <div style="margin-top: 2.5rem; text-align: left;">
+                    <div class="info-row">
+                        <span class="info-label">Department</span>
+                        <span class="info-value" th:text="${viewedStaff.department.name}">CS</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Official Email</span>
+                        <span class="info-value" th:text="${viewedStaff.email}">email@domain.com</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Contact Number</span>
+                        <span class="info-value"
+                            th:text="${viewedStaff.contactNumber ?: 'Not Provided'}">9876543210</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Family Contact</span>
+                        <span class="info-value"
+                            th:text="${viewedStaff.familyContactNumber ?: 'Not Provided'}">9876543210</span>
+                    </div>
+                    <div class="info-row" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+                        <span class="info-label">Residential Address</span>
+                        <span class="info-value" style="line-height: 1.4; text-align: left;"
+                            th:text="${viewedStaff.address ?: 'Not Provided'}">Address here...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Column -->
+            <div class="card" style="margin-bottom: 0;">
+                <div class="card-header"
+                    style="background: var(--grad-violet); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 1.5rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                    <h2 class="card-title" style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0;">
+                        <i class="fas fa-folder-open"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 10px; margin-right: 0.5rem;"></i>
+                        Staff Verification Documents
+                    </h2>
+                </div>
+                <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">
+                    Review the uploaded identification and qualification documents for this staff member.</p>
+
+                <!-- Aadhaar -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>Aadhaar Card</h4>
+                        <span th:if="${viewedStaff.aadhaarCardPath != null}" class="tag tag-success">Uploaded</span>
+                        <span th:unless="${viewedStaff.aadhaarCardPath != null}" class="tag tag-danger">No
+                            Document</span>
+                    </div>
+                    <a th:if="${viewedStaff.aadhaarCardPath != null}" th:href="@{${viewedStaff.aadhaarCardPath}}"
+                        target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- PAN -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>PAN Card</h4>
+                        <span th:if="${viewedStaff.panCardPath != null}" class="tag tag-success">Uploaded</span>
+                        <span th:unless="${viewedStaff.panCardPath != null}" class="tag tag-danger">No Document</span>
+                    </div>
+                    <a th:if="${viewedStaff.panCardPath != null}" th:href="@{${viewedStaff.panCardPath}}"
+                        target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- Bank Passbook -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>Bank Passbook Front Page</h4>
+                        <span th:if="${viewedStaff.bankPassbookPath != null}" class="tag tag-success">Uploaded</span>
+                        <span th:unless="${viewedStaff.bankPassbookPath != null}" class="tag tag-danger">No
+                            Document</span>
+                    </div>
+                    <a th:if="${viewedStaff.bankPassbookPath != null}" th:href="@{${viewedStaff.bankPassbookPath}}"
+                        target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- Degree -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>Degree Certificate</h4>
+                        <span th:if="${viewedStaff.degreeCertificatePath != null}"
+                            class="tag tag-success">Uploaded</span>
+                        <span th:unless="${viewedStaff.degreeCertificatePath != null}" class="tag tag-danger">No
+                            Document</span>
+                    </div>
+                    <a th:if="${viewedStaff.degreeCertificatePath != null}"
+                        th:href="@{${viewedStaff.degreeCertificatePath}}" target="_blank" class="btn btn-primary"
+                        style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- Marksheet -->
+                <div class="doc-card">
+                    <div class="doc-info">
+                        <h4>Latest Marksheet / Transcript</h4>
+                        <span th:if="${viewedStaff.marksheetPath != null}" class="tag tag-success">Uploaded</span>
+                        <span th:unless="${viewedStaff.marksheetPath != null}" class="tag tag-danger">No Document</span>
+                    </div>
+                    <a th:if="${viewedStaff.marksheetPath != null}" th:href="@{${viewedStaff.marksheetPath}}"
+                        target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+
+                <!-- UAN -->
+                <div class="doc-card" style="margin-bottom: 0;">
+                    <div class="doc-info">
+                        <h4>UAN Document (EPF)</h4>
+                        <span th:if="${viewedStaff.uanDocumentPath != null}" class="tag tag-success">Uploaded</span>
+                        <span th:unless="${viewedStaff.uanDocumentPath != null}" class="tag tag-danger">No
+                            Document</span>
+                    </div>
+                    <a th:if="${viewedStaff.uanDocumentPath != null}" th:href="@{${viewedStaff.uanDocumentPath}}"
+                        target="_blank" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.8rem;">
+                        <i class="fas fa-eye"></i> View Document
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

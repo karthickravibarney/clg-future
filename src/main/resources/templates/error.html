@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Error - SmartCampus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .error-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ef4444;
+            margin-top: 0;
+        }
+
+        .details {
+            text-align: left;
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error-container">
+        <h1>Oops! Something went wrong</h1>
+        <p>An unexpected error occurred. Please try again or contact support.</p>
+
+        <div class="details" th:if="${error}">
+            <strong>Status:</strong> <span th:text="${status}">500</span><br>
+            <strong>Error:</strong> <span th:text="${error}">Internal Server Error</span><br>
+            <strong>Message:</strong> <span th:text="${message}">Unexpected Error</span>
+        </div>
+
+        <a href="/login" class="btn">Back to Login</a>
+    </div>
+</body>
+
+</html>

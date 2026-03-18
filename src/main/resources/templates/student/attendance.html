@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>My Attendance - SmartCampus</title>
+</head>
+
+<body>
+    <div layout:fragment="title">Attendance History</div>
+
+    <div layout:fragment="content">
+        <div class="card">
+            <div class="card-header"
+                style="background: var(--grad-ocean); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 2rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                <div style="display: flex; flex-direction: column;">
+                    <h2 class="card-title" style="color: white; font-size: 1.8rem; font-weight: 800;"><i
+                            class="fas fa-calendar-check"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 12px; margin-right: 0.5rem;"></i>
+                        Personal Attendance Log</h2>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem; opacity: 0.9;">View your daily presence record
+                        as verified by faculty.</p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th th:each="p : ${#numbers.sequence(1, 8)}" style="text-align: center; position: relative;"
+                                th:styleappend="${activePeriod != null and activePeriod == p} ? 'background: rgba(79, 70, 229, 0.1); color: var(--primary);' : ''">
+                                <span th:text="${'Period ' + p}">Period 1</span>
+                                <span th:if="${activePeriod != null and activePeriod == p}"
+                                    style="position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; font-size: 0.55rem; padding: 1px 4px; border-radius: 4px; font-weight: 800; line-height: 1.2;">NOW</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entry : ${attendanceMap}">
+                            <td style="font-weight: 600; font-family: 'Outfit', sans-serif;"
+                                th:text="${#temporals.format(entry.key, 'EEEE, dd MMM yyyy')}">01 Jan 2024</td>
+                            <td th:each="p : ${#numbers.sequence(1, 8)}" th:with="att=${entry.value.get(p)}"
+                                style="text-align: center;">
+                                <div th:if="${att != null}"
+                                    th:title="${att.markedBy != null ? (att.markedBy.employeeId == session.username ? 'Marked by: You' : 'Marked by: ' + att.markedBy.fullName) : 'System Automation'}">
+                                    <span th:if="${att.isPresent}" class="tag tag-success"
+                                        style="padding: 0.25rem 0.5rem; display: block; width: fit-content; margin: 0 auto;">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                    <span th:unless="${att.isPresent}" class="tag tag-danger"
+                                        style="padding: 0.25rem 0.5rem; display: block; width: fit-content; margin: 0 auto;">
+                                        <i class="fas fa-times"></i>
+                                    </span>
+                                    <div th:if="${att.markedBy != null}"
+                                        style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                        <i class="fas fa-user-pen" style="font-size: 0.6rem; opacity: 0.7;"></i>
+                                        <span
+                                            th:text="${att.markedBy.employeeId == session.username ? 'You' : att.markedBy.fullName.split(' ')[0]}">Staff</span>
+                                    </div>
+                                </div>
+                                <div th:unless="${att != null}" style="color: #cbd5e1; font-size: 0.8rem;">
+                                    -
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${attendanceMap == null or attendanceMap.isEmpty()}">
+                            <td colspan="9" style="text-align: center; padding: 4rem; color: var(--text-muted);">
+                                <i class="fas fa-clipboard-question"
+                                    style="font-size: 2rem; display: block; margin-bottom: 1rem; opacity: 0.3;"></i>
+                                No attendance entries found for your account.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

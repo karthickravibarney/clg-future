@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>My Timetable - SmartCampus</title>
+    <style>
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+        .timetable-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .timetable-table th, .timetable-table td {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color, #e5e7eb);
+            text-align: center;
+        }
+        .timetable-table th {
+            background: var(--bg-header, #f3f4f6);
+            font-weight: 600;
+        }
+        .timetable-table td {
+            background: var(--bg-cell, #ffffff);
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="title">Academic Timetable</div>
+
+    <div layout:fragment="content">
+        <div class="card">
+            <div class="card-header"
+                style="background: var(--grad-sunset); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 2rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none; flex-wrap: wrap; gap: 1.5rem;">
+                <div style="display: flex; flex-direction: column; flex: 1; min-width: 300px;">
+                    <h2 class="card-title" style="color: white; font-size: 1.8rem; font-weight: 800;"><i
+                            class="fas fa-calendar-days"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 12px; margin-right: 0.5rem;"></i>
+                        Batch Schedule</h2>
+                    <div style="margin-top: 0.5rem;">
+                        <span class="tag"
+                            style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);"
+                            th:text="${session.username}">STU2024CS001</span>
+                    </div>
+                </div>
+                <form th:action="@{/student/timetable}" method="get"
+                    style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <select name="year" class="form-control"
+                        style="width: 120px; padding: 0.4rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);"
+                        onchange="this.form.submit()" required>
+                        <option value="" style="color: var(--text-main);">Year</option>
+                        <option th:each="y : ${#numbers.sequence(1, maxYears)}" th:value="${y}"
+                            th:text="${y + (y == 1 ? 'st' : (y == 2 ? 'nd' : (y == 3 ? 'rd' : 'th'))) + ' Year'}"
+                            th:selected="${selectedYear == y}" style="color: var(--text-main);"></option>
+                    </select>
+
+                    <select name="semester" class="form-control"
+                        style="width: 140px; padding: 0.4rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);"
+                        onchange="this.form.submit()" required>
+                        <option value="" style="color: var(--text-main);">Semester</option>
+                        <option th:each="s : ${#numbers.sequence(1, maxSemesters)}" th:value="${s}"
+                            th:text="'Semester ' + ${s}" th:selected="${selectedSemester == s}"
+                            style="color: var(--text-main);"></option>
+                    </select>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <table class="timetable-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th th:each="p : ${#numbers.sequence(1, 11)}" th:style="${p == 3 or p == 6 or p == 9 ? 'padding: 0.25rem;' : ''}">
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <span th:style="${p == 3 or p == 6 or p == 9 ? 'font-size: 0.65rem;' : ''}" 
+                                          th:text="${p == 3 or p == 6 or p == 9 ? '' : 'Period ' + (p < 3 ? p : (p < 6 ? p - 1 : (p < 9 ? p - 2 : p - 3)))}">Period 1</span>
+                                    <span th:with="timing=${timingsMap != null ? timingsMap.get(p) : null}"
+                                        th:if="${timing != null}"
+                                        style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;"
+                                        th:text="${timing.startTime + ' - ' + timing.endTime}">09:00 - 09:50</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="day : ${T(java.time.DayOfWeek).values()}" th:if="${day.value <= 5}">
+                            <td th:text="${day.name()}" style="font-weight: 700; background: var(--bg-main); font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); padding: 0.25rem 0.5rem;">MONDAY
+                            </td>
+                            <td th:each="p : ${#numbers.sequence(1, 11)}" th:with="dayMap=${timetableMap != null ? timetableMap.get(day.name()) : null},
+                                        entry=${dayMap != null ? dayMap.get(p) : null},
+                                        timing=${timingsMap != null ? timingsMap.get(p) : null}">
+
+                                <!-- Break Display -->
+                                <div th:if="${timing != null and timing.isBreak}"
+                                    th:style="${p == 3 or p == 6 or p == 9 ? 'text-align: center; color: #92400e; font-style: italic; padding: 0.1rem;' : 'text-align: center; color: #92400e; font-style: italic;'}"
+                                    style="text-align: center; color: #92400e; font-style: italic;">
+                                    <i class="fas fa-coffee" th:style="${p == 3 or p == 6 or p == 9 ? 'font-size: 0.65rem; opacity: 0.5;' : 'font-size: 0.85rem; opacity: 0.5;'}" style="font-size: 0.85rem; opacity: 0.5;"></i>
+                                    <div th:style="${p == 3 or p == 6 or p == 9 ? 'font-weight: 700; font-size: 0.55rem;' : 'font-weight: 700; font-size: 0.65rem;'}" style="font-weight: 700; font-size: 0.65rem;"
+                                        th:text="${timing.breakName != null ? timing.breakName : 'BREAK'}">LUNCH</div>
+                                </div>
+
+                                <!-- Standard Entry -->
+                                <div th:unless="${timing != null and timing.isBreak}">
+                                    <div th:if="${entry != null}">
+                                        <div th:style="${p == 3 or p == 6 or p == 9 ? 'font-weight: 700; color: var(--primary); font-size: 0.85rem;' : 'font-weight: 750; color: var(--primary); font-size: 1.05rem;'}"
+                                            style="font-weight: 750; color: var(--primary); font-size: 1.05rem;"
+                                            th:text="${entry.subjectName != null and !entry.subjectName.trim().isEmpty() ? entry.subjectName : 'No Subject'}">
+                                            Mathematics</div>
+                                        <div th:style="${p == 3 or p == 6 or p == 9 ? 'font-size: 0.7rem; color: var(--text-muted); margin-top: 0.15rem;' : 'font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;'}"
+                                            style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                            <i class="fas fa-user-tie" th:style="${p == 3 or p == 6 or p == 9 ? 'font-size: 0.65rem;' : 'font-size: 0.8rem;'}" style="font-size: 0.8rem;"></i>
+                                            <span th:text="${entry.staff != null ? entry.staff.fullName : 'N/A'}">Prof.
+                                                Smith</span>
+                                        </div>
+                                    </div>
+                                    <div th:unless="${entry != null}" style="color: #e5e7eb; font-size: 0.75rem;">Free
+                                        Period</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

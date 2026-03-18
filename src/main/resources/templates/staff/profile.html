@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>My Profile - SmartCampus</title>
+    <style>
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2.5rem;
+            align-items: start;
+        }
+
+        .profile-side-card {
+            background: var(--white);
+            padding: 3rem 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            position: sticky;
+            top: 100px;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            font-size: 3rem;
+            font-family: 'Outfit', sans-serif;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 20px rgba(67, 56, 202, 0.2);
+            border: 4px solid white;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-main);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .doc-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .doc-card:hover {
+            border-color: var(--primary-light);
+            background: var(--bg-main);
+            transform: translateX(5px);
+        }
+
+        .doc-info h4 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        input[type="file"] {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 1rem;
+            font-family: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="title">My Profile</div>
+
+    <div layout:fragment="content">
+        <div th:if="${success}" class="alert alert-success" style="margin-bottom: 2rem;">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${success}">Updated successfully</span>
+        </div>
+
+        <div class="profile-grid">
+            <form th:action="@{/staff/profile/upload}" method="post" enctype="multipart/form-data"
+                style="display: contents;">
+
+                <!-- Profile Column -->
+                <div class="profile-side-card">
+                    <div class="avatar-preview" style="overflow: hidden; padding: 0;">
+                        <img th:if="${staff.profilePhotoPath != null}" th:src="@{${staff.profilePhotoPath}}"
+                            alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                        <span th:unless="${staff.profilePhotoPath != null}"
+                            th:text="${staff.fullName.substring(0, 1).toUpperCase()}">U</span>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label for="profilePhoto" class="btn btn-outline"
+                            style="font-size: 0.75rem; padding: 0.4rem 0.8rem; cursor: pointer;">
+                            <i class="fas fa-camera"></i> Change Photo
+                        </label>
+                        <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" style="display: none;"
+                            onchange="document.getElementById('photo-submit-btn').click();">
+                        <button type="submit" id="photo-submit-btn" style="display: none;"></button>
+                    </div>
+
+                    <h2 style="margin: 0; font-size: 1.5rem;" th:text="${staff.fullName}">Staff Name</h2>
+                    <div class="tag tag-info" style="margin-top: 0.75rem;" th:text="${staff.employeeId}">Employee ID
+                    </div>
+
+                    <div style="margin-top: 2rem; text-align: left;">
+                        <div style="margin-bottom: 1rem;">
+                            <label class="info-label" style="display: block; margin-bottom: 0.4rem;">Official
+                                Email</label>
+                            <input type="email" name="email" th:value="${staff.email}" class="form-control"
+                                style="width: 100%; padding: 0.6rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; font-weight: 500;">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label class="info-label" style="display: block; margin-bottom: 0.4rem;">Contact
+                                Number</label>
+                            <input type="text" name="contactNumber" th:value="${staff.contactNumber}"
+                                placeholder="Your contact number" class="form-control"
+                                style="width: 100%; padding: 0.6rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; font-weight: 500;">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label class="info-label" style="display: block; margin-bottom: 0.4rem;">Family Contact
+                                Number</label>
+                            <input type="text" name="familyContactNumber" th:value="${staff.familyContactNumber}"
+                                placeholder="Emergency contact" class="form-control"
+                                style="width: 100%; padding: 0.6rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; font-weight: 500;">
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label class="info-label" style="display: block; margin-bottom: 0.4rem;">Residential
+                                Address</label>
+                            <textarea name="address" th:text="${staff.address}" placeholder="Full address"
+                                class="form-control"
+                                style="width: 100%; padding: 0.6rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; font-weight: 500; height: 80px; resize: vertical;"></textarea>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Department</span>
+                            <span class="info-value" th:text="${staff.department.name}">Department</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Designation</span>
+                            <span class="info-value" th:text="${staff.designation}">Professor</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Column -->
+                <div class="card">
+                    <div class="card-header"
+                        style="background: var(--grad-violet); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 1.5rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                        <h2 class="card-title" style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0;">
+                            <i class="fas fa-folder-open"
+                                style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 10px; margin-right: 0.5rem;"></i>
+                            Staff Verification Documents
+                        </h2>
+                    </div>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Upload required
+                        documents
+                        for institutional verification and records.</p>
+
+                    <!-- Aadhaar -->
+                    <div class="doc-card">
+                        <div class="doc-info">
+                            <h4>Aadhaar Card</h4>
+                            <span th:if="${staff.aadhaarCardPath != null}" class="tag tag-success">Uploaded</span>
+                            <span th:unless="${staff.aadhaarCardPath != null}" class="tag tag-danger">Action
+                                Required</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-end;">
+                            <a th:if="${staff.aadhaarCardPath != null}" th:href="@{${staff.aadhaarCardPath}}"
+                                target="_blank" class="btn btn-outline"
+                                style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+                                <i class="fas fa-eye"></i> View Current
+                            </a>
+                            <input type="file" name="aadhaar" accept="image/*,.pdf">
+                        </div>
+                    </div>
+
+                    <!-- PAN -->
+                    <div class="doc-card">
+                        <div class="doc-info">
+                            <h4>PAN Card</h4>
+                            <span th:if="${staff.panCardPath != null}" class="tag tag-success">Uploaded</span>
+                            <span th:unless="${staff.panCardPath != null}" class="tag tag-danger">Action Required</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-end;">
+                            <a th:if="${staff.panCardPath != null}" th:href="@{${staff.panCardPath}}" target="_blank"
+                                class="btn btn-outline" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+                                <i class="fas fa-eye"></i> View Current
+                            </a>
+                            <input type="file" name="pan" accept="image/*,.pdf">
+                        </div>
+                    </div>
+
+                    <!-- Bank Passbook -->
+                    <div class="doc-card">
+                        <div class="doc-info">
+                            <h4>Bank Passbook Front Page</h4>
+                            <span th:if="${staff.bankPassbookPath != null}" class="tag tag-success">Uploaded</span>
+                            <span th:unless="${staff.bankPassbookPath != null}" class="tag tag-danger">Action
+                                Required</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-end;">
+                            <a th:if="${staff.bankPassbookPath != null}" th:href="@{${staff.bankPassbookPath}}"
+                                target="_blank" class="btn btn-outline"
+                                style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+                                <i class="fas fa-eye"></i> View Current
+                            </a>
+                            <input type="file" name="bank" accept="image/*,.pdf">
+                        </div>
+                    </div>
+
+                    <!-- Degree Certificate -->
+                    <div class="doc-card">
+                        <div class="doc-info">
+                            <h4>Degree Certificate</h4>
+                            <span th:if="${staff.degreeCertificatePath != null}" class="tag tag-success">Uploaded</span>
+                            <span th:unless="${staff.degreeCertificatePath != null}" class="tag tag-danger">Action
+                                Required</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-end;">
+                            <a th:if="${staff.degreeCertificatePath != null}"
+                                th:href="@{${staff.degreeCertificatePath}}" target="_blank" class="btn btn-outline"
+                                style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+                                <i class="fas fa-eye"></i> View Current
+                            </a>
+                            <input type="file" name="degree" accept="image/*,.pdf">
+                        </div>
+                    </div>
+
+                    <!-- Marksheet -->
+                    <div class="doc-card">
+                        <div class="doc-info">
+                            <h4>Latest Marksheet / Transcript</h4>
+                            <span th:if="${staff.marksheetPath != null}" class="tag tag-success">Uploaded</span>
+                            <span th:unless="${staff.marksheetPath != null}" class="tag tag-danger">Action
+                                Required</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-end;">
+                            <a th:if="${staff.marksheetPath != null}" th:href="@{${staff.marksheetPath}}"
+                                target="_blank" class="btn btn-outline"
+                                style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+                                <i class="fas fa-eye"></i> View Current
+                            </a>
+                            <input type="file" name="marksheet" accept="image/*,.pdf">
+                        </div>
+                    </div>
+
+                    <!-- UAN -->
+                    <div class="doc-card" style="margin-bottom: 0;">
+                        <div class="doc-info">
+                            <h4>UAN Document (EPF)</h4>
+                            <span th:if="${staff.uanDocumentPath != null}" class="tag tag-success">Uploaded</span>
+                            <span th:unless="${staff.uanDocumentPath != null}" class="tag tag-danger">Action
+                                Required</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-end;">
+                            <a th:if="${staff.uanDocumentPath != null}" th:href="@{${staff.uanDocumentPath}}"
+                                target="_blank" class="btn btn-outline"
+                                style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+                                <i class="fas fa-eye"></i> View Current
+                            </a>
+                            <input type="file" name="uan" accept="image/*,.pdf">
+                        </div>
+                    </div>
+
+                    <div
+                        style="margin-top: 2.5rem; text-align: right; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                        <button type="submit" class="btn btn-primary" style="padding: 1rem 2.5rem; font-weight: 600;">
+                            <i class="fas fa-cloud-arrow-up"></i> Submit &amp; Update Documents
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

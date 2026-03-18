@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College ERP - Dashboard</title>
+    <!-- Modern Fonts: Outfit for Display/Brand, Inter for UI text -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <!-- Mobile Hamburger Toggle -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-graduation-cap"></i>
+            <h2>SmartCampus</h2>
+        </div>
+        <div class="nav-links">
+            <div th:if="${session.role == 'ADMIN'}">
+                <a th:href="@{/admin/dashboard}" class="nav-item">
+                    <i class="fas fa-grid-2" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
+                    Dashboard
+                </a>
+                <a th:href="@{/admin/departments}" class="nav-item">
+                    <i class="fas fa-building"></i> Departments
+                </a>
+                <a th:href="@{/admin/students}" class="nav-item">
+                    <i class="fas fa-user-graduate"></i> Students
+                </a>
+                <a th:href="@{/admin/staff}" class="nav-item">
+                    <i class="fas fa-user-tie"></i> Staff
+                </a>
+                <a th:href="@{/admin/timetable}" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i> Manage Timetable
+                </a>
+                <a th:href="@{/admin/timings}" class="nav-item">
+                    <i class="fas fa-clock"></i> Period Timings
+                </a>
+                <a th:href="@{/admin/batches}" class="nav-item">
+                    <i class="fas fa-layer-group"></i> Manage Batches
+                </a>
+                <a th:href="@{/admin/schedule}" class="nav-item">
+                    <i class="fas fa-calendar-days"></i> Exam Schedule
+                </a>
+                <a th:href="@{/admin/notifications}" class="nav-item">
+                    <i class="fas fa-bell"></i> Manage Notifications
+                </a>
+            </div>
+
+            <div th:if="${session.role == 'PRINCIPAL'}">
+                <a th:href="@{/staff/dashboard}" class="nav-item">
+                    <i class="fas fa-chart-pie"></i> Dashboard
+                </a>
+                <a th:href="@{/admin/departments}" class="nav-item">
+                    <i class="fas fa-building"></i> Departments
+                </a>
+                <a th:href="@{/admin/students}" class="nav-item">
+                    <i class="fas fa-users-viewfinder"></i> Students
+                </a>
+                <a th:href="@{/admin/staff}" class="nav-item">
+                    <i class="fas fa-chalkboard-user"></i> Staff
+                </a>
+                <a th:href="@{/admin/timetable}" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i> Timetable
+                </a>
+                <a th:href="@{/staff/attendance}" class="nav-item">
+                    <i class="fas fa-clipboard-user"></i> Attendance
+                </a>
+                <a th:href="@{/admin/batches}" class="nav-item">
+                    <i class="fas fa-layer-group"></i> Batches
+                </a>
+            </div>
+
+            <div th:if="${session.role == 'STAFF' or session.role == 'HOD'}">
+                <a th:href="@{/staff/dashboard}" class="nav-item">
+                    <i class="fas fa-border-all"></i> Dashboard
+                </a>
+                <a th:href="@{/staff/timetable}" class="nav-item">
+                    <i class="fas fa-calendar-days"></i> My Timetable
+                </a>
+                <a th:if="${session.role == 'HOD'}" th:href="@{/admin/timetable}" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i> Manage Timetable
+                </a>
+                <a th:if="${session.role == 'HOD'}" th:href="@{/admin/schedule}" class="nav-item">
+                    <i class="fas fa-calendar-days"></i> Exam Schedule
+                </a>
+                <a th:if="${session.role == 'HOD'}" th:href="@{/admin/timings}" class="nav-item">
+                    <i class="fas fa-clock"></i> Period Timings
+                </a>
+                <a th:href="@{/admin/students}" class="nav-item">
+                    <i class="fas fa-users"></i> Students
+                </a>
+                <a th:href="@{/admin/staff}" class="nav-item">
+                    <i class="fas fa-user-group"></i> Peers
+                </a>
+                <a th:href="@{/staff/attendance}" class="nav-item">
+                    <i class="fas fa-calendar-check"></i> Attendance
+                </a>
+                <a th:href="@{/staff/marks}" class="nav-item">
+                    <i class="fas fa-square-poll-vertical"></i> Enter Marks
+                </a>
+            </div>
+
+            <div th:if="${session.role == 'STUDENT'}">
+                <a th:href="@{/student/dashboard}" class="nav-item">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+                <a th:href="@{/student/timetable}" class="nav-item">
+                    <i class="fas fa-calendar-days"></i> My Timetable
+                </a>
+                <a th:href="@{/student/attendance}" class="nav-item">
+                    <i class="fas fa-calendar-check"></i> My Attendance
+                </a>
+                <a th:href="@{/student/profile}" class="nav-item">
+                    <i class="fas fa-id-badge"></i> My Profile
+                </a>
+                <a th:href="@{/student/results}" class="nav-item">
+                    <i class="fas fa-file-contract"></i> My Results
+                </a>
+                <a th:href="@{/student/schedule}" class="nav-item">
+                    <i class="fas fa-clock"></i> Exam Schedule
+                </a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-arrow-right-from-bracket"></i> Sign Out
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <div class="main-content">
+        <header>
+            <div class="page-title">
+                <h1 layout:fragment="title">Dashboard</h1>
+                <p>Overview & Activity</p>
+            </div>
+
+            <div class="header-actions" style="display: flex; gap: 1rem; align-items: center;">
+                <div class="notification-dropdown">
+                    <button class="btn-action" id="notificationBtn"
+                        style="background: none; border: none; font-size: 1.2rem; color: var(--text-muted); position: relative;">
+                        <i class="far fa-bell"></i>
+                        <span th:if="${unreadCount > 0}" th:text="${unreadCount}"
+                            style="position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; background: var(--accent); border-radius: 50%; border: 2px solid white; color: white; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: 700;"></span>
+                    </button>
+                    <div class="dropdown-content" id="notificationContent">
+                        <div class="dropdown-header">
+                            <h3>Notifications</h3>
+                            <span class="badge" th:text="${unreadCount + ' New'}">0 New</span>
+                        </div>
+                        <div class="notification-list">
+                            <div th:if="${notifications == null or notifications.empty}" class="empty-state">
+                                <i class="fas fa-bell-slash"></i>
+                                <p>No notifications yet</p>
+                            </div>
+                        <div th:each="note : ${notifications}" class="notification-item"
+                                th:classappend="${note.read ? '' : 'unread'}"
+                                th:onclick="'window.location.href=\'' + @{/notifications} + '\''">
+                                <div class="note-icon" th:classappend="${note.type.toLowerCase()}">
+                                    <i
+                                        th:class="${note.type == 'SUCCESS' ? 'fas fa-check-circle' : (note.type == 'WARNING' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle')}"></i>
+                                </div>
+                                <div class="note-body">
+                                    <h4 th:text="${note.title}">Title</h4>
+                                    <p th:text="${note.message}">Message</p>
+                                    <span class="time"
+                                        th:text="${#temporals.format(note.createdAt, 'dd MMM, HH:mm')}">Time</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown-footer">
+                            <a th:href="@{/notifications}">View All Notifications</a>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    .notification-dropdown {
+                        position: relative;
+                    }
+
+                    .dropdown-content {
+                        display: none;
+                        position: absolute;
+                        right: 0;
+                        top: 100%;
+                        width: 320px;
+                        background: white;
+                        border-radius: var(--radius-md);
+                        box-shadow: var(--card-hover-shadow);
+                        border: 1px solid var(--border-color);
+                        z-index: 1000;
+                        margin-top: 1rem;
+                        overflow: hidden;
+                        animation: slideDown 0.3s ease;
+                    }
+
+                    .dropdown-content.show {
+                        display: block;
+                    }
+
+                    @keyframes slideDown {
+                        from {
+                            opacity: 0;
+                            transform: translateY(-10px);
+                        }
+
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+
+                    .dropdown-header {
+                        padding: 1rem 1.25rem;
+                        border-bottom: 1px solid var(--border-color);
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        background: var(--bg-main);
+                    }
+
+                    .dropdown-header h3 {
+                        margin: 0;
+                        font-size: 1rem;
+                        font-weight: 600;
+                    }
+
+                    .badge {
+                        background: var(--primary);
+                        color: white;
+                        padding: 2px 8px;
+                        border-radius: 12px;
+                        font-size: 0.75rem;
+                        font-weight: 600;
+                    }
+
+                    .notification-list {
+                        max-height: 350px;
+                        overflow-y: auto;
+                    }
+
+                    .notification-item {
+                        padding: 1rem 1.25rem;
+                        border-bottom: 1px solid var(--border-color);
+                        display: flex;
+                        gap: 1rem;
+                        transition: var(--transition);
+                        cursor: pointer;
+                    }
+
+                    .notification-item:hover {
+                        background: var(--bg-main);
+                    }
+
+                    .notification-item.unread {
+                        background: rgba(67, 56, 202, 0.03);
+                    }
+
+                    .note-icon {
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-shrink: 0;
+                    }
+
+                    .note-icon.info {
+                        background: rgba(56, 189, 248, 0.1);
+                        color: #0284c7;
+                    }
+
+                    .note-icon.success {
+                        background: rgba(16, 185, 129, 0.1);
+                        color: #059669;
+                    }
+
+                    .note-icon.warning {
+                        background: rgba(245, 158, 11, 0.1);
+                        color: #d97706;
+                    }
+
+                    .note-body h4 {
+                        margin: 0;
+                        font-size: 0.9rem;
+                        font-weight: 600;
+                        color: var(--text-main);
+                    }
+
+                    .note-body p {
+                        margin: 0.2rem 0 0.4rem 0;
+                        font-size: 0.85rem;
+                        color: var(--text-muted);
+                        line-height: 1.4;
+                    }
+
+                    .note-body .time {
+                        font-size: 0.75rem;
+                        color: #94a3b8;
+                    }
+
+                    .empty-state {
+                        padding: 3rem 1rem;
+                        text-align: center;
+                        color: var(--text-muted);
+                    }
+
+                    .empty-state i {
+                        font-size: 2.5rem;
+                        margin-bottom: 1rem;
+                        opacity: 0.3;
+                    }
+
+                    .dropdown-footer {
+                        padding: 0.8rem;
+                        text-align: center;
+                        border-top: 1px solid var(--border-color);
+                    }
+
+                    .dropdown-footer a {
+                        text-decoration: none;
+                        color: var(--primary);
+                        font-size: 0.85rem;
+                        font-weight: 600;
+                    }
+                </style>
+
+                <div class="user-dropdown">
+                    <div class="user-info" id="userDropdownBtn" style="cursor: pointer;">
+                        <div class="user-avatar" style="overflow: hidden; padding: 0;">
+                            <img th:if="${session.profilePhotoPath != null}" th:src="@{${session.profilePhotoPath}}"
+                                alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                            <span th:unless="${session.profilePhotoPath != null}"
+                                th:text="${session.userFullName != null ? session.userFullName.substring(0, 1).toUpperCase() : (session.username != null ? session.username.substring(0, 1).toUpperCase() : 'U')}">U</span>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name"
+                                th:text="${session.userFullName != null ? session.userFullName : session.username}">
+                                Username
+                            </div>
+                            <div class="user-role" th:text="${session.role}">ROLE</div>
+                        </div>
+                        <i class="fas fa-chevron-down"
+                            style="color: var(--text-muted); font-size: 0.8rem; margin-left: 0.5rem; margin-right: 0.5rem;"></i>
+                    </div>
+
+                    <div class="dropdown-content" id="userDropdownContent" style="width: 200px;">
+                        <div class="dropdown-header">
+                            <h3>Account Actions</h3>
+                        </div>
+                        <div class="notification-list" style="padding: 0.5rem 0;">
+                            <a th:if="${session.role == 'STUDENT'}" th:href="@{/student/profile}"
+                                class="notification-item"
+                                style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-user" style="color: var(--text-muted);"></i>
+                                <span style="color: var(--text-main); font-weight: 500;">My Profile</span>
+                            </a>
+                            <a th:if="${session.role == 'STAFF' or session.role == 'HOD' or session.role == 'PRINCIPAL'}"
+                                th:href="@{/staff/profile}" class="notification-item"
+                                style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-user-tie" style="color: var(--text-muted);"></i>
+                                <span style="color: var(--text-main); font-weight: 500;">My Profile</span>
+                            </a>
+                            <a th:if="${session.role == 'STUDENT'}" th:href="@{/student/change-password}"
+                                class="notification-item"
+                                style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-key" style="color: var(--text-muted);"></i>
+                                <span style="color: var(--text-main); font-weight: 500;">Update Password</span>
+                            </a>
+                            <a th:if="${session.role == 'STAFF' or session.role == 'HOD' or session.role == 'PRINCIPAL'}"
+                                th:href="@{/staff/change-password}" class="notification-item"
+                                style="text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-lock" style="color: var(--text-muted);"></i>
+                                <span style="color: var(--text-main); font-weight: 500;">Update Password</span>
+                            </a>
+                            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                                <button type="submit" class="notification-item"
+                                    style="width: 100%; text-align: left; background: none; border: none; font-family: inherit; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; color: var(--danger);">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span style="font-weight: 500;">Sign Out</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    .user-dropdown {
+                        position: relative;
+                    }
+                </style>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var notifBtn = document.getElementById('notificationBtn');
+                        var notifContent = document.getElementById('notificationContent');
+                        var userBtn = document.getElementById('userDropdownBtn');
+                        var userContent = document.getElementById('userDropdownContent');
+
+                        // Notifications dropdown
+                        if (notifBtn && notifContent) {
+                            notifBtn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                notifContent.classList.toggle('show');
+                                if (userContent) userContent.classList.remove('show');
+                            });
+                            notifContent.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                            });
+                        }
+
+                        // User profile dropdown
+                        if (userBtn && userContent) {
+                            userBtn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                userContent.classList.toggle('show');
+                                if (notifContent) notifContent.classList.remove('show');
+                            });
+                            userContent.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                            });
+                        }
+
+                        // Close all dropdowns on outside click
+                        document.addEventListener('click', function () {
+                            if (notifContent) notifContent.classList.remove('show');
+                            if (userContent) userContent.classList.remove('show');
+                        });
+                    });
+                </script>
+            </div>
+        </header>
+
+        <main class="content-body" layout:fragment="content">
+            <!-- Content gets injected here -->
+        </main>
+    </div>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+        (function() {
+            var toggle = document.getElementById('sidebarToggle');
+            var sidebar = document.getElementById('sidebar');
+            var backdrop = document.getElementById('sidebarBackdrop');
+            var icon = toggle ? toggle.querySelector('i') : null;
+
+            function openSidebar() {
+                sidebar.classList.add('active');
+                backdrop.classList.add('active');
+                if (icon) { icon.className = 'fas fa-times'; }
+            }
+
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                backdrop.classList.remove('active');
+                if (icon) { icon.className = 'fas fa-bars'; }
+            }
+
+            if (toggle) {
+                toggle.addEventListener('click', function() {
+                    if (sidebar.classList.contains('active')) {
+                        closeSidebar();
+                    } else {
+                        openSidebar();
+                    }
+                });
+            }
+
+            if (backdrop) {
+                backdrop.addEventListener('click', closeSidebar);
+            }
+
+            // Close sidebar when clicking a nav link (on mobile)
+            var navLinks = document.querySelectorAll('.nav-item');
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        closeSidebar();
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html>

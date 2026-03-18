@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Student Dashboard - SmartCampus</title>
+    <style>
+        .welcome-card {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(67, 56, 202, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .welcome-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .welcome-card h2 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .welcome-card p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="title">My Dashboard</div>
+
+    <div layout:fragment="content">
+        <!-- Premium Welcome Card -->
+        <div class="welcome-card">
+            <div style="display: flex; align-items: center; gap: 2.5rem; position: relative; z-index: 1;">
+                <div style="font-size: 4rem; text-shadow: 0 4px 12px rgba(0,0,0,0.1);"><i
+                        class="fas fa-user-graduate"></i></div>
+                <div>
+                    <h2 th:text="${'Welcome back, ' + student.fullName}">Welcome, Student</h2>
+                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                        <span class="tag"
+                            style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);"
+                            th:text="${student.department.name}">Department</span>
+                        <span style="opacity: 0.8; font-size: 0.95rem;" th:text="${student.batch.name}">Batch</span>
+                        <span
+                            style="opacity: 0.8; font-size: 0.95rem; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 1rem;"
+                            th:text="${'Roll No: ' + student.rollNumber}">Roll No</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-info">
+                    <h3>Overall Attendance</h3>
+                    <div class="value" th:text="${attendanceCount + ' Classes'}">0 Classes</div>
+                </div>
+            </div>
+            <div class="stat-card" style="border-left-color: #10b981;">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i
+                        class="fas fa-star"></i></div>
+                <div class="stat-info">
+                    <h3>Academic Standing</h3>
+                    <div class="value" style="font-size: 1.25rem;">Good (CGPA: 8.5)</div>
+                </div>
+            </div>
+            <div class="stat-card" style="border-left-color: #f43f5e;">
+                <div class="stat-icon" style="background: rgba(244, 63, 94, 0.1); color: #f43f5e;"><i
+                        class="fas fa-clock"></i></div>
+                <div class="stat-info">
+                    <h3>Next Class</h3>
+                    <div class="value" style="font-size: 1.1rem;">10:00 AM - Room 402</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <!-- Student Quick Links -->
+            <div class="card">
+                <div class="card-header"
+                    style="background: var(--grad-emerald); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 1.5rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                    <h2 class="card-title" style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0;"><i
+                            class="fas fa-compass"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 10px; margin-right: 0.5rem;"></i>
+                        Student Services</h2>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                    <a th:href="@{/student/results}" class="btn btn-outline"
+                        style="padding: 1.5rem; flex-direction: column; gap: 0.75rem; height: auto;">
+                        <i class="fas fa-award" style="font-size: 1.8rem; color: #6366f1;"></i>
+                        <span style="font-weight: 600;">Academic Results</span>
+                    </a>
+                    <a th:href="@{/student/schedule}" class="btn btn-outline"
+                        style="padding: 1.5rem; flex-direction: column; gap: 0.75rem; height: auto;">
+                        <i class="fas fa-calendar-days" style="font-size: 1.8rem; color: #8b5cf6;"></i>
+                        <span style="font-weight: 600;">Exam Schedule</span>
+                    </a>
+                    <a th:href="@{/student/attendance}" class="btn btn-outline"
+                        style="padding: 1.5rem; flex-direction: column; gap: 0.75rem; height: auto;">
+                        <i class="fas fa-chart-line" style="font-size: 1.8rem; color: #f59e0b;"></i>
+                        <span style="font-weight: 600;">Attendance Log</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Sidebar -->
+            <div class="card">
+                <div class="card-header"
+                    style="background: var(--grad-primary); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 1.5rem; margin: -2rem -2rem 1.5rem -2rem; color: white; border-bottom: none;">
+                    <h2 class="card-title" style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0;"><i
+                            class="fas fa-id-badge"
+                            style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 10px; margin-right: 0.5rem;"></i>
+                        Quick Profile</h2>
+                </div>
+                <div style="padding: 0.5rem 0;">
+                    <div
+                        style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+                        <div class="user-avatar" style="width: 50px; height: 50px; font-size: 1.25rem;"
+                            th:text="${student.fullName.substring(0, 1).toUpperCase()}">S</div>
+                        <div>
+                            <div style="font-weight: 650; font-size: 1rem;" th:text="${student.fullName}">Student Name
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);" th:text="${student.email}">
+                                email@college.com</div>
+                        </div>
+                    </div>
+                    <a th:href="@{/student/profile}" class="btn btn-primary" style="width: 100%;">View Complete
+                        Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
