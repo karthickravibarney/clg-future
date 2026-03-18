@@ -809,9 +809,9 @@ public class AdminController {
     }
 
     @PostMapping("/notifications/delete/{id}")
-    public String deleteNotification(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String deleteNotification(@PathVariable long id, RedirectAttributes redirectAttributes) {
         try {
-            notificationRepository.deleteById(id);
+            notificationService.deleteNotification(id);
             redirectAttributes.addFlashAttribute("success", "Notification deleted successfully.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed to delete notification.");

@@ -1,11 +1,12 @@
 package com.college.erp.security;
 
+import com.college.erp.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -17,20 +18,14 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    @Value("${erp.jwt.secret}")
-    private String jwtSecret;
-
-    @Value("${erp.jwt.expiration-ms}")
-    private Long jwtExpirationMs;
-
-    @Value("${erp.jwt.cookie-name}")
-    private String jwtCookieName;
+    @Autowired
+    private JwtProperties jwtProperties;
 
     public String getJwtFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (jwtCookieName.equals(cookie.getName())) {
+                if (jwtProperties.getCookieName().equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
@@ -42,13 +37,13 @@ public class JwtUtils {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .expiration(new Date((new Date()).getTime() + jwtProperties.getExpirationMs()))
                 .signWith(getSigningKey())
                 .compact();
     }
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
+        byte[] keyBytes = jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
