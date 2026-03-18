@@ -24,26 +24,54 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
+            // ❌ Disable CSRF (for APIs)
             .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+            // ❌ No session (JWT based)
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
+            // 🔐 AUTHORIZATION RULES
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**", "/uploads/**", "/favicon.ico").permitAll()
+
+                // ✅ PUBLIC (VERY IMPORTANT)
+                .requestMatchers(
+                        "/", 
+                        "/index.html",
+                        "/login",
+                        "/error",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/uploads/**",
+                        "/favicon.ico"
+                ).permitAll()
+
+                // 🔐 ROLE BASED ACCESS
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/staff/**").hasAnyRole("STAFF", "HOD", "PRINCIPAL")
                 .requestMatchers("/student/**").hasRole("STUDENT")
+
+                // 🔒 EVERYTHING ELSE PROTECTED
                 .anyRequest().authenticated()
             )
+
+            // 🔥 ADD JWT FILTER
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    // 🔐 Authentication Manager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    // 🔐 Password Encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
