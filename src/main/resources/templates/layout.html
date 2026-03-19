@@ -147,7 +147,15 @@
         <header>
             <div class="page-title">
                 <h1 layout:fragment="title">Dashboard</h1>
-                <p>Overview & Activity</p>
+                <p>
+                    Overview & Activity
+                    <span th:if="${dbConnected}" class="status-badge connected" title="Database Connected">
+                        <i class="fas fa-database"></i> Connected
+                    </span>
+                    <span th:unless="${dbConnected}" class="status-badge disconnected" title="Database Error">
+                        <i class="fas fa-database"></i> Offline
+                    </span>
+                </p>
             </div>
 
             <div class="header-actions" style="display: flex; gap: 1rem; align-items: center;">
@@ -443,6 +451,23 @@
                             if (notifContent) notifContent.classList.remove('show');
                             if (userContent) userContent.classList.remove('show');
                         });
+
+                        // Real-time notification polling
+                        let lastUnreadCount = [[${unreadCount}]];
+                        setInterval(() => {
+                            fetch('/api/notifications/unread-count')
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        if (data.count > lastUnreadCount) {
+                                            // New notification detected - refresh to show it
+                                            window.location.reload();
+                                        }
+                                        lastUnreadCount = data.count;
+                                    }
+                                })
+                                .catch(err => console.debug('Polling skipped'));
+                        }, 2000); // Poll every 2 seconds as requested
                     });
                 </script>
             </div>

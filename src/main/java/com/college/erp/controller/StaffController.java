@@ -72,6 +72,7 @@ public class StaffController {
         Staff staff = staffRepository.findByEmployeeId(empId).orElse(null);
         if (staff != null) {
             String role = getRole();
+            model.addAttribute("staff", staff);
             if ("HOD".equals(role)) {
                 // HOD sees department specific counts
                 model.addAttribute("deptCount", 1);
@@ -124,10 +125,19 @@ public class StaffController {
         List<com.college.erp.model.Batch> batches = batchService.getAllBatches().stream()
                 .filter(b -> b.getDepartment().getId().equals(currentStaff.getDepartment().getId()))
                 .collect(Collectors.toList());
+        
+        // Dynamic max periods based on configuration
+        List<com.college.erp.model.PeriodTiming> timings = academicService.getPeriodTimings(currentStaff.getDepartment());
+        int maxPeriods = timings.stream()
+                .mapToInt(com.college.erp.model.PeriodTiming::getPeriodNumber)
+                .max().orElse(8);
+        if (maxPeriods < 8) maxPeriods = 8; // Minimum 8 buttons for UI consistency
+
         model.addAttribute("batches", batches);
         model.addAttribute("selectedBatchId", batchId);
         model.addAttribute("currentPeriod", period);
         model.addAttribute("activePeriod", activePeriod);
+        model.addAttribute("maxPeriods", maxPeriods);
 
         List<Student> students = Collections.emptyList();
         if (batchId != null) {
@@ -323,6 +333,9 @@ public class StaffController {
                 .filter(b -> b.getDepartment().getId().equals(currentStaff.getDepartment().getId()))
                 .collect(Collectors.toList());
         model.addAttribute("batches", batches);
+        
+        Integer activePeriod = academicService.getCurrentPeriodNumber(currentStaff.getDepartment());
+        model.addAttribute("activePeriod", activePeriod);
 
         model.addAttribute("maxYears", 4);
         model.addAttribute("maxSemesters", 8);

@@ -29,20 +29,17 @@ public class AdminController {
     private final BatchService batchService;
     private final com.college.erp.service.AcademicService academicService;
     private final com.college.erp.service.NotificationService notificationService;
-    private final NotificationRepository notificationRepository;
 
     public AdminController(DepartmentService departmentService, StudentService studentService,
             StaffService staffService, BatchService batchService,
             com.college.erp.service.AcademicService academicService,
-            com.college.erp.service.NotificationService notificationService,
-            NotificationRepository notificationRepository) {
+            com.college.erp.service.NotificationService notificationService) {
         this.departmentService = departmentService;
         this.studentService = studentService;
         this.staffService = staffService;
         this.batchService = batchService;
         this.academicService = academicService;
         this.notificationService = notificationService;
-        this.notificationRepository = notificationRepository;
     }
 
     private String getUsername() {
@@ -402,15 +399,27 @@ public class AdminController {
     @GetMapping("/staff/{id}")
     public String viewStaffProfile(@PathVariable Long id, Model model) {
         String role = getRole();
-        if (!"ADMIN".equals(role) && !"PRINCIPAL".equals(role)) {
-            return "redirect:/home";
-        }
-
+        String username = getUsername();
+        
         Staff staff = staffService.getAllStaff().stream()
                 .filter(s -> s.getId().equals(id)).findFirst().orElse(null);
 
         if (staff == null) {
             return "redirect:/admin/staff";
+        }
+
+        if ("ADMIN".equals(role) || "PRINCIPAL".equals(role)) {
+            // Full access
+        } else if ("HOD".equals(role) || "STAFF".equals(role)) {
+            com.college.erp.model.Staff currentUser = staffService.getAllStaff().stream()
+                    .filter(s -> s.getEmployeeId().equals(username)).findFirst().orElse(null);
+            
+            if (currentUser == null || staff.getDepartment() == null || 
+                !staff.getDepartment().getId().equals(currentUser.getDepartment().getId())) {
+                return "redirect:/home";
+            }
+        } else {
+            return "redirect:/home";
         }
 
         model.addAttribute("viewedStaff", staff);
@@ -793,7 +802,7 @@ public class AdminController {
     }
     @GetMapping("/notifications")
     public String notifications(Model model) {
-        model.addAttribute("allNotifications", notificationService.getNotificationsForUser("ADMIN", null));
+        model.addAttribute("allNotifications", notificationService.getGlobalNotifications());
         return "admin/notifications";
     }
 

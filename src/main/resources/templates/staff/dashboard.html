@@ -86,18 +86,18 @@
                 <div style="text-align: center; padding: 1rem 0;">
                     <div class="user-avatar"
                         style="width: 80px; height: 80px; margin: 0 auto 1rem auto; font-size: 2rem;"
-                        th:text="${username.substring(0, 1).toUpperCase()}">S</div>
-                    <h3 style="margin: 0;" th:text="${username}">Staff Name</h3>
+                        th:text="${userFullName != null ? userFullName.substring(0, 1).toUpperCase() : 'S'}">S</div>
+                    <h3 style="margin: 0;" th:text="${userFullName ?: username}">Staff Name</h3>
                     <p class="tag tag-info" style="margin-top: 0.5rem;" th:text="${role}">DESIGNATION</p>
                 </div>
                 <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
                         <span style="color: var(--text-muted); font-size: 0.9rem;">Emp ID:</span>
-                        <span style="font-weight: 600; font-size: 0.9rem;">EMP-08412</span>
+                        <span style="font-weight: 600; font-size: 0.9rem;" th:text="${staff.employeeId}">EMP-08412</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
                         <span style="color: var(--text-muted); font-size: 0.9rem;">Department:</span>
-                        <span style="font-weight: 600; font-size: 0.9rem;">Computer Science</span>
+                        <span style="font-weight: 600; font-size: 0.9rem;" th:text="${staff.department != null ? staff.department.name : 'N/A'}">Computer Science</span>
                     </div>
                 </div>
             </div>

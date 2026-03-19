@@ -138,6 +138,8 @@
                                 <div style="display: flex; flex-direction: column; align-items: center;">
                                     <span th:style="${p == 3 or p == 6 or p == 9 ? 'font-size: 0.65rem;' : ''}" 
                                           th:text="${p == 3 or p == 6 or p == 9 ? '' : 'Period ' + (p < 3 ? p : (p < 6 ? p - 1 : (p < 9 ? p - 2 : p - 3)))}">Period 1</span>
+                                    <span th:if="${activePeriod != null and activePeriod == p}" 
+                                          style="font-size: 0.6rem; background: #ef4444; color: white; padding: 1px 4px; border-radius: 4px; margin-top: 2px; font-weight: 800;">NOW</span>
                                     <span th:with="timing=${timingsMap != null ? timingsMap.get(p) : null}"
                                         th:if="${timing != null}"
                                         style="font-size: 0.7rem; color: var(--text-muted); font-weight: 400;"

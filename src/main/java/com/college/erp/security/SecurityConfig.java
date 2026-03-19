@@ -52,6 +52,8 @@ public class SecurityConfig {
                         .permitAll()
 
                         // 🔐 ROLE BASED ACCESS
+                        .requestMatchers("/admin/students/**", "/admin/staff/**", "/admin/student/**").hasAnyRole("ADMIN", "PRINCIPAL", "HOD", "STAFF")
+                        .requestMatchers("/admin/timetable/**", "/admin/schedule/**", "/admin/timings/**").hasAnyRole("ADMIN", "PRINCIPAL", "HOD")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/staff/**").hasAnyRole("STAFF", "HOD", "PRINCIPAL")
                         .requestMatchers("/student/**").hasRole("STUDENT")

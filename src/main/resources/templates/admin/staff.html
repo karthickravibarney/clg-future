@@ -90,7 +90,7 @@
                             <th>Designation</th>
                             <th>Department</th>
                             <th>Official Email</th>
-                            <th th:if="${role == 'ADMIN' or role == 'PRINCIPAL'}"
+                            <th th:if="${role == 'ADMIN' or role == 'PRINCIPAL' or role == 'HOD'}"
                                 style="text-align: right;">Actions</th>
                         </tr>
                     </thead>
@@ -110,7 +110,7 @@
                             <td><span class="tag tag-info" th:text="${s.department != null ? s.department.name : 'N/A'}">Computer Science</span></td>
                             <td style="color: var(--text-muted); font-size: 0.85rem;" th:text="${s.email}">
                                 jane@example.com</td>
-                            <td th:if="${role == 'ADMIN' or role == 'PRINCIPAL'}"
+                            <td th:if="${role == 'ADMIN' or role == 'PRINCIPAL' or role == 'HOD'}"
                                 style="text-align: right; white-space: nowrap;">
                                 <a th:href="@{/admin/staff/{id}(id=${s.id})}" class="btn btn-outline"
                                     style="padding: 0.3rem 0.6rem; font-size: 0.75rem; margin-right: 0.25rem;">

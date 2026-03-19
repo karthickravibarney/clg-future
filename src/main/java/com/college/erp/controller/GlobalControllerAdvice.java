@@ -26,6 +26,9 @@ public class GlobalControllerAdvice {
     @Autowired
     private StaffRepository staffRepository;
 
+    @Autowired
+    private javax.sql.DataSource dataSource;
+
     @ModelAttribute
     public void addAttributes(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -58,6 +61,13 @@ public class GlobalControllerAdvice {
 
             model.addAttribute("notifications", notificationService.getNotificationsForUser(role, username));
             model.addAttribute("unreadCount", notificationService.getUnreadCount(role, username));
+            
+            // Database connectivity check
+            try (java.sql.Connection conn = dataSource.getConnection()) {
+                model.addAttribute("dbConnected", !conn.isClosed());
+            } catch (Exception e) {
+                model.addAttribute("dbConnected", false);
+            }
         }
     }
 }

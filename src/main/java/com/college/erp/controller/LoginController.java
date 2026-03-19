@@ -38,6 +38,10 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginPage() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            return "redirect:/home";
+        }
         return "login";
     }
 
@@ -85,13 +89,19 @@ public class LoginController {
 
     @PostMapping("/notifications/mark-read/{id}")
     public String markAsRead(@PathVariable Long id) {
-        notificationService.markAsRead(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            notificationService.markAsRead(id, auth.getName());
+        }
         return "redirect:/notifications";
     }
 
     @PostMapping("/notifications/clear/{id}")
     public String clearNotification(@PathVariable Long id) {
-        notificationService.clearNotification(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            notificationService.clearNotification(id, auth.getName());
+        }
         return "redirect:/notifications";
     }
 

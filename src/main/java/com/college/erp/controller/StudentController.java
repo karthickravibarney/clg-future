@@ -46,6 +46,49 @@ public class StudentController {
             model.addAttribute("student", student);
             model.addAttribute("attendanceCount", academicService.getAttendanceByStudent(student).size());
             model.addAttribute("marks", academicService.getMarksByStudent(student));
+
+            // Standing based on marks
+            java.util.List<com.college.erp.model.Marks> marksList = academicService.getMarksByStudent(student);
+            if (!marksList.isEmpty()) {
+                double avg = marksList.stream().mapToDouble(m -> (m.getMarksObtained() / m.getTotalMarks()) * 100).average().orElse(0.0);
+                String standing = avg >= 80 ? "Excellent" : (avg >= 60 ? "Good" : (avg >= 40 ? "Average" : "Poor"));
+                model.addAttribute("academicStanding", standing + " (Avg: " + String.format("%.1f", avg) + "%)");
+            } else {
+                model.addAttribute("academicStanding", "N/A (No marks entered)");
+            }
+
+            // Current class detection
+            if (student.getDepartment() != null && student.getBatch() != null) {
+                Integer activePeriod = academicService.getCurrentPeriodNumber(student.getDepartment());
+                if (activePeriod != null) {
+                    try {
+                        String batchName = student.getBatch().getName();
+                        int startYear = Integer.parseInt(batchName.split("-")[0]);
+                        int currentYear = java.time.LocalDate.now().getYear();
+                        int currentMonth = java.time.LocalDate.now().getMonthValue();
+                        int year = currentYear - startYear + 1;
+                        int sem = (currentMonth >= 7) ? (year * 2) - 1 : (year * 2);
+
+                        java.util.List<com.college.erp.model.TimetableEntry> timetable = academicService
+                                .getTimetableByBatchYearAndSem(student.getBatch(), year, sem);
+                        String currentDay = java.time.LocalDate.now().getDayOfWeek().name();
+                        
+                        com.college.erp.model.TimetableEntry activeEntry = timetable.stream()
+                            .filter(e -> e.getDayOfWeek().equalsIgnoreCase(currentDay) && e.getPeriodNumber() == activePeriod)
+                            .findFirst().orElse(null);
+                        
+                        if (activeEntry != null) {
+                            model.addAttribute("currentClass", activeEntry.getSubjectName() + " (Period " + activePeriod + ")");
+                        } else {
+                            model.addAttribute("currentClass", "No scheduled class now");
+                        }
+                    } catch (Exception e) {
+                        model.addAttribute("currentClass", "Free Period");
+                    }
+                } else {
+                    model.addAttribute("currentClass", "No active period");
+                }
+            }
         }
         return "student/dashboard";
     }

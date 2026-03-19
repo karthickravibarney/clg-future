@@ -81,15 +81,15 @@
                         class="fas fa-star"></i></div>
                 <div class="stat-info">
                     <h3>Academic Standing</h3>
-                    <div class="value" style="font-size: 1.25rem;">Good (CGPA: 8.5)</div>
+                    <div class="value" style="font-size: 1.1rem;" th:text="${academicStanding}">Good (CGPA: 8.5)</div>
                 </div>
             </div>
             <div class="stat-card" style="border-left-color: #f43f5e;">
                 <div class="stat-icon" style="background: rgba(244, 63, 94, 0.1); color: #f43f5e;"><i
                         class="fas fa-clock"></i></div>
                 <div class="stat-info">
-                    <h3>Next Class</h3>
-                    <div class="value" style="font-size: 1.1rem;">10:00 AM - Room 402</div>
+                    <h3>Current/Next Event</h3>
+                    <div class="value" style="font-size: 1.1rem;" th:text="${currentClass != null ? currentClass : 'No Classes Now'}">10:00 AM - Room 402</div>
                 </div>
             </div>
         </div>

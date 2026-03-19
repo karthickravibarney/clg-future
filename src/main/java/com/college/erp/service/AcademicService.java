@@ -166,13 +166,20 @@ public class AcademicService {
 
     public Integer getCurrentPeriodNumber(Department department) {
         List<PeriodTiming> timings = getPeriodTimings(department);
-        LocalTime now = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH);
+        // Force IST timezone for matching with local college timings
+        java.time.ZonedDateTime nowIST = java.time.ZonedDateTime.now(java.time.ZoneId.of("Asia/Kolkata"));
+        LocalTime now = nowIST.toLocalTime();
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
 
         for (PeriodTiming timing : timings) {
             try {
-                LocalTime start = LocalTime.parse(timing.getStartTime().toUpperCase(), formatter);
-                LocalTime end = LocalTime.parse(timing.getEndTime().toUpperCase(), formatter);
+                // Remove potential extra spaces and fix "09:00" to "9:00" if needed for 'h:mm'
+                String startTimeStr = timing.getStartTime().trim().toUpperCase().replaceFirst("^0", "");
+                String endTimeStr = timing.getEndTime().trim().toUpperCase().replaceFirst("^0", "");
+                
+                LocalTime start = LocalTime.parse(startTimeStr, formatter);
+                LocalTime end = LocalTime.parse(endTimeStr, formatter);
 
                 if (!now.isBefore(start) && !now.isAfter(end)) {
                     return timing.getPeriodNumber();

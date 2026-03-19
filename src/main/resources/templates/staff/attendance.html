@@ -53,7 +53,7 @@
                     </form>
 
                     <div class="period-selector" style="display: flex; gap: 0.5rem; width: 100%; flex-wrap: wrap;">
-                        <a th:each="p : ${#numbers.sequence(1, 8)}"
+                        <a th:each="p : ${#numbers.sequence(1, maxPeriods ?: 8)}"
                             th:href="@{/staff/attendance(period=${p}, batchId=${selectedBatchId})}" class="period-btn"
                             th:classappend="${currentPeriod == p} ? 'active' : ''" style="position: relative;">
                             <span th:text="${'Period ' + p}">Period 1</span>
