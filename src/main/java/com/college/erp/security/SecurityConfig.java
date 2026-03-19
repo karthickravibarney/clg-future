@@ -26,41 +26,41 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // ❌ Disable CSRF (for APIs)
-            .csrf(csrf -> csrf.disable())
+                // ❌ Disable CSRF (for APIs)
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> {
+                })
 
-            // ❌ No session (JWT based)
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
+                // ❌ No session (JWT based)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-            // 🔐 AUTHORIZATION RULES
-            .authorizeHttpRequests(auth -> auth
+                // 🔐 AUTHORIZATION RULES
+                .authorizeHttpRequests(auth -> auth
 
-                // ✅ PUBLIC (VERY IMPORTANT)
-                .requestMatchers(
-                        "/", 
-                        "/index.html",
-                        "/login",
-                        "/error",
-                        "/css/**",
-                        "/js/**",
-                        "/images/**",
-                        "/uploads/**",
-                        "/favicon.ico"
-                ).permitAll()
+                        // ✅ PUBLIC (VERY IMPORTANT)
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/login",
+                                "/error",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/uploads/**",
+                                "/favicon.ico")
+                        .permitAll()
 
-                // 🔐 ROLE BASED ACCESS
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/staff/**").hasAnyRole("STAFF", "HOD", "PRINCIPAL")
-                .requestMatchers("/student/**").hasRole("STUDENT")
+                        // 🔐 ROLE BASED ACCESS
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/staff/**").hasAnyRole("STAFF", "HOD", "PRINCIPAL")
+                        .requestMatchers("/student/**").hasRole("STUDENT")
 
-                // 🔒 EVERYTHING ELSE PROTECTED
-                .anyRequest().authenticated()
-            )
+                        // 🔒 EVERYTHING ELSE PROTECTED
+                        .anyRequest().authenticated())
 
-            // 🔥 ADD JWT FILTER
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                // 🔥 ADD JWT FILTER
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -75,5 +75,21 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+
+        org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
+
+        config.setAllowedOrigins(java.util.List.of("*")); // for now (later restrict)
+        config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(java.util.List.of("*"));
+        config.setAllowCredentials(true);
+
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }

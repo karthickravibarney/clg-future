@@ -29,7 +29,8 @@ public class LoginController {
     @Value("${erp.jwt.cookie-name}")
     private String jwtCookieName;
 
-    public LoginController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, NotificationService notificationService) {
+    public LoginController(AuthenticationManager authenticationManager, JwtUtils jwtUtils,
+            NotificationService notificationService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.notificationService = notificationService;
@@ -52,10 +53,17 @@ public class LoginController {
 
             Cookie cookie = new Cookie(jwtCookieName, jwt);
             cookie.setHttpOnly(true);
+            cookie.setSecure(true); // Always secure for production (Render HTTPS)
             cookie.setPath("/");
-            cookie.setMaxAge(24 * 60 * 60); // 24 hours
-            // cookie.setSecure(true); // Enable in production with HTTPS
+            cookie.setMaxAge(24 * 60 * 60);
+            cookie.setAttribute("SameSite", "None"); // Required for cross-site cookie handling in some cases
+
             response.addCookie(cookie);
+
+            // Redundant Header for absolute certainty in modern browsers
+            response.setHeader("Set-Cookie",
+                    jwtCookieName + "=" + jwt +
+                            "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=" + (24 * 60 * 60));
 
             return "redirect:/home";
         } catch (AuthenticationException e) {
@@ -106,7 +114,10 @@ public class LoginController {
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/home";
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            return "redirect:/home";
+        }
+        return "redirect:/login";
     }
 }
-

@@ -16,11 +16,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         Path uploadDir = Paths.get("uploads/documents");
         String uploadPath = uploadDir.toFile().getAbsolutePath();
 
-        if (!uploadPath.startsWith("/")) {
-            uploadPath = "/" + uploadPath; // For Windows compatibility
+        // Cross-platform absolute path fix
+        String resourceLocation = uploadPath.replace("\\", "/");
+        if (!resourceLocation.startsWith("/")) {
+            resourceLocation = "/" + resourceLocation;
         }
 
         registry.addResourceHandler("/uploads/documents/**")
-                .addResourceLocations("file:" + uploadPath + "/");
+                .addResourceLocations("file:" + resourceLocation + "/");
     }
 }
